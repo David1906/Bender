@@ -14,28 +14,46 @@
             <ColumnDefinition Width="3*"/>
             <ColumnDefinition Width="1*"/>
             <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="1*"/>
         </Grid.ColumnDefinitions>
 
+
         <TextBox 
+            Grid.Column="0"
             x:Name = "TxtField"
+            VerticalAlignment="Center"
             Margin="10 0"
             materialDesign:HintAssist.Hint="{Binding ElementName=root, Path=Label}"
+            Text="{Binding ElementName=root, Path=Value}"
             Style="{StaticResource MaterialDesignFloatingHintTextBox}"
-            materialDesign:TextFieldAssist.HasClearButton="True"
-            VerticalAlignment="Center" />
+            materialDesign:TextFieldAssist.HasClearButton="True" />
 
         <ComboBox
             Grid.Column="1"
+            VerticalAlignment="Center"
             Margin="10 0"
-            materialDesign:HintAssist.Hint="Mode"
-            ItemsSource="{Binding ElementName=root, Path=Options}"
+            materialDesign:HintAssist.Hint="Terminator"
+            ItemsSource="{Binding ElementName=root, Path=Terminators}"
+            SelectedValue="{Binding ElementName=root, Path=Terminator, BindsDirectlyToSource=True}"
             Style="{StaticResource MaterialDesignFloatingHintComboBox}"/>
 
         <ComboBox
             Grid.Column="2"
+            Name="CmbMode"
             Margin="10 0"
-            materialDesign:HintAssist.Hint="Terminator"
-            ItemsSource="{Binding ElementName=root, Path=Terminators}"
+            materialDesign:HintAssist.Hint="Mode"
+            SelectionChanged="CmbMode_Selected"
+            ItemsSource="{Binding ElementName=root, Path=Modes}"
+            SelectedValue="{Binding ElementName=root, Path=Mode, BindsDirectlyToSource=True}"
             Style="{StaticResource MaterialDesignFloatingHintComboBox}"/>
+
+        <Button
+            Grid.Column="3"
+            Style="{StaticResource MaterialDesignFloatingActionMiniSecondaryDarkButton}"
+            Content="{Binding ElementName=root, Path=Idx}"
+            IsEnabled="False"
+            Width="20"
+            Height="20"
+            VerticalAlignment="Center"/>
     </Grid>
 </UserControl>

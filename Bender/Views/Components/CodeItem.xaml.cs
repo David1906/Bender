@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Bender.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,25 +21,51 @@ namespace Bender.Views.Components
     /// </summary>
     public partial class CodeItem : UserControl
     {
-
-
         public string Label
         {
             get { return (string)GetValue(LabelProperty); }
             set { SetValue(LabelProperty, value); }
         }
-
-        // Using a DependencyProperty as the backing store for Label.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty LabelProperty =
-            DependencyProperty.Register("Label", typeof(string), typeof(CodeItem), new PropertyMetadata("Field:"));
+        public static readonly DependencyProperty LabelProperty = DependencyProperty.Register("Label", typeof(string), typeof(CodeItem), new PropertyMetadata("Field:"));
 
 
-        public List<string> Options { get; set; } = new List<string>
+
+        public string Value
+        {
+            get { return (string)GetValue(ValueProperty); }
+            set { SetValue(ValueProperty, value); }
+        }
+        public static readonly DependencyProperty ValueProperty = DependencyProperty.Register("Value", typeof(string), typeof(CodeItem), new PropertyMetadata(""));
+
+        public string Mode
+        {
+            get { return (string)GetValue(ModeProperty); }
+            set { SetValue(ModeProperty, value); }
+        }
+        public static readonly DependencyProperty ModeProperty = DependencyProperty.Register("Mode", typeof(string), typeof(CodeItem), new PropertyMetadata(""));
+
+        public List<string> Modes { get; set; } = new List<string>
         {
             "Decode",
             "Fixed",
+            "Scann",
             "Disabled",
         };
+
+        public string Terminator
+        {
+            get { return (string)GetValue(TerminatorProperty); }
+            set { SetValue(TerminatorProperty, value); }
+        }
+        public static readonly DependencyProperty TerminatorProperty = DependencyProperty.Register("Terminator", typeof(string), typeof(CodeItem), new PropertyMetadata(""));
+
+        public int Idx
+        {
+            get { return (int)GetValue(IdxdxProperty); }
+            set { SetValue(IdxdxProperty, value); }
+        }
+        public static readonly DependencyProperty IdxdxProperty = DependencyProperty.Register("Idx", typeof(int), typeof(CodeItem), new PropertyMetadata(0));
+
         public List<string> Terminators { get; set; } = new List<string>
         {
             ",",
@@ -50,6 +77,12 @@ namespace Bender.Views.Components
         public CodeItem()
         {
             InitializeComponent();
+        }
+
+        private void CmbMode_Selected(object sender, RoutedEventArgs e)
+        {
+            var value = (sender as ComboBox)?.SelectedItem as string;
+            Mode = value ?? "";
         }
     }
 }

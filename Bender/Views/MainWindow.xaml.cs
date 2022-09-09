@@ -1,4 +1,5 @@
 ﻿using Bender.Models;
+using Bender.Views.Components;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -14,6 +15,11 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Bender.Extensions;
+using System.Reflection;
+using System.IO;
+using QRCoder;
+using System.Drawing;
 
 namespace Bender.Views
 {
@@ -22,34 +28,95 @@ namespace Bender.Views
     /// </summary>
     public partial class MainWindow : Window
     {
-        private ObservableCollection<CodeChunk> Format { get; set; }
+        private Format Format { get; set; }
 
         public MainWindow()
         {
             InitializeComponent();
-            this.Format = new ObservableCollection<CodeChunk>
+            var FormatItems = new List<CodeChunk>
             {
-                new CodeChunk() { Property = "Supplier", Terminator = ",", Label = "Supplier:"},
-                new CodeChunk() { Property = "Model", Terminator = ",", Label = "Model:"},
-                new CodeChunk() { Property = "Rev", Terminator = ",", Label = "Rev:"},
-                new CodeChunk() { Property = "SupplierPn", Terminator = ",", Label = "Supplier PN:"},
-                new CodeChunk() { Property = "Qty", Terminator = ",", Label = "Qty:"},
-                new CodeChunk() { Property = "HhPn", Terminator = ",", Label = "HH PN:"},
-                new CodeChunk() { Property = "DateCode", Terminator = ",", Label = "Date Code:"},
-                new CodeChunk() { Property = "LotNo", Terminator = ",", Label = "Lot No:"},
-                new CodeChunk() { Property = "PkgId", Terminator = ",", Label = "Pkg Id:"},
-                new CodeChunk() { Property = "WorkOrder", Terminator = "\n", Label = "Work Order:"},
+                new CodeChunk() { Property = "Supplier", Terminator = ",", Label = "Supplier:", Mode = "Fixed"},
+                new CodeChunk() { Property = "HhPn", Terminator = ",", Label = "HH PN:", Mode = "Decode"},
+                new CodeChunk() { Property = "Qty", Terminator = ",", Label = "Qty:", Mode = "Decode"},
+                new CodeChunk() { Property = "SupplierPn", Terminator = ",", Label = "Supplier PN:", Mode = "Decode"},
+                new CodeChunk() { Property = "DateCode", Terminator = ",", Label = "Date Code:", Mode = "Decode"},
+                new CodeChunk() { Property = "LotNo", Terminator = ",", Label = "Lot No:", Mode = "Decode"},
+                new CodeChunk() { Property = "PkgId", Terminator = "None", Label = "Pkg Id:", Mode = "Decode"},
+
+                new CodeChunk() { Property = "Model", Terminator = "None", Label = "Model:", Mode = "Disabled"},
+                new CodeChunk() { Property = "Rev", Terminator = "None", Label = "Rev:", Mode = "Disabled"},
+                new CodeChunk() { Property = "WorkOrder", Terminator = "None", Label = "Work Order:", Mode = "Disabled"},
             };
-            lvDataBinding.ItemsSource = this.Format;
+            this.Format = new Format(FormatItems);
+            this.RefreshListViewCodeItem();
+            TxtCode.Focus();
         }
 
         private void BtnDecode_Click(object sender, RoutedEventArgs e)
         {
-            var sortedItems = this.Format.OrderBy(x => x.Label).ToList();
-            this.Format.Clear();
-            foreach (var item in sortedItems)
+            this.Decode();
+        }
+
+        private void Decode()
+        {
+            var code = new Code(TxtCode.Text);
+            var packageInfo = code.Decode(this.Format);
+            foreach (PropertyInfo prop in packageInfo.GetType().GetProperties())
             {
-                this.Format.Add(item);
+                var type = Nullable.GetUnderlyingType(prop.PropertyType) ?? prop.PropertyType;
+                if (type == typeof(string))
+                {
+                    var value = prop.GetValue(packageInfo, null)?.ToString() ?? "";
+                    this.Format.SetProp(prop.Name, value);
+                }
+            }
+            this.RefreshListViewCodeItem();
+            this.SetQrImage(code);
+            TxtCode.Text = "";
+        }
+
+        private void BtnUp_Click(object sender, RoutedEventArgs e)
+        {
+            var selectedItem = ListViewCodeItem.SelectedItem as CodeChunk;
+            if (selectedItem != null)
+            {
+                this.Format.SwapUp(selectedItem);
+            }
+        }
+
+        private void BtnDown_Click(object sender, RoutedEventArgs e)
+        {
+            var selectedItem = ListViewCodeItem.SelectedItem as CodeChunk;
+            if (selectedItem != null)
+            {
+                this.Format.SwapDown(selectedItem);
+            }
+        }
+        private void RefreshListViewCodeItem()
+        {
+            ListViewCodeItem.ItemsSource = this.Format.Items;
+            ListViewCodeItem.Items.Refresh();
+        }
+
+
+        public void SetQrImage(Code code)
+        {
+            ImgQr.Source = code.GenerateQr(this.Format);
+        }
+
+        private void TxtCode_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Return)
+            {
+                this.Decode();
+            }
+        }
+
+        private void TxtCode_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (TxtCode.Text.Contains("\n"))
+            {
+                this.Decode();
             }
         }
     }

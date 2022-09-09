@@ -14,7 +14,7 @@
         TextOptions.TextRenderingMode="Auto"        
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="{DynamicResource MaterialDesignFont}"
-        Title="Bender" Height="450" Width="800">
+        Title="Bender" Height="650" Width="950">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="7*"/>
@@ -27,61 +27,37 @@
             Margin="10">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
             <TextBox 
-                    x:Name = "TxtCode"
-                    Margin="0 0 0 25"
-                    materialDesign:HintAssist.Hint="Package 2D Code:"
-                    Style="{StaticResource MaterialDesignFloatingHintTextBox}"
-                    materialDesign:TextFieldAssist.HasClearButton="True"
-                    VerticalAlignment="Center" />
+                x:Name = "TxtCode"
+                Margin="0 0 0 25"
+                materialDesign:HintAssist.Hint="Package 2D Code:"
+                Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                materialDesign:TextFieldAssist.HasClearButton="True"
+                VerticalAlignment="Center" 
+                KeyDown="TxtCode_KeyDown"
+                TextChanged="TxtCode_TextChanged"/>
 
             <ListView 
-                Grid.Row="1"
+                Grid.Row="2"
+                Name="ListViewCodeItem"
                 ScrollViewer.CanContentScroll="True"
-                ScrollViewer.VerticalScrollBarVisibility="Auto"
-                 Name="lvDataBinding">
+                ScrollViewer.VerticalScrollBarVisibility="Auto">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <cmp:CodeItem 
-                                MinWidth="450"
-                                Label="{Binding Label}" />
+                            MinWidth="600"
+                            Label="{Binding Label}"
+                            Mode="{Binding Mode, Mode=TwoWay}"
+                            Terminator="{Binding Terminator, Mode=TwoWay}"
+                            Value="{Binding Value, Mode=TwoWay}"
+                            Idx="{Binding Index}"/>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-
-            <!--<cmp:CodeItem 
-                    x:Name = "ItemSupplier"
-                    Label="Supplier:" />
-                <cmp:CodeItem 
-                    x:Name = "ItemModel"
-                    Label="Model:" />
-                <cmp:CodeItem 
-                    x:Name = "ItemRev"
-                    Label="Rev:" />
-                <cmp:CodeItem 
-                    x:Name = "ItemSupplierPn"
-                    Label="Supplier PN:" />
-                <cmp:CodeItem 
-                    x:Name = "ItemQty"
-                    Label="Qty:" />
-                <cmp:CodeItem 
-                    x:Name = "ItemHHPn"
-                    Label="HH PN:" />
-                <cmp:CodeItem 
-                    x:Name = "ItemDateCode"
-                    Label="Date Code:" />
-                <cmp:CodeItem 
-                    x:Name = "ItemLotNo"
-                    Label="Lot No:" />
-                <cmp:CodeItem 
-                    x:Name = "ItemPkgId"
-                    Label="Pkg Id:" />
-                <cmp:CodeItem 
-                    x:Name = "ItemWorkOrder"
-                    Label="Work Order:" />-->
         </Grid>
 
         <StackPanel 
@@ -93,9 +69,41 @@
                   Name="BtnDecode"
                   Click="BtnDecode_Click"
                   Style="{StaticResource MaterialDesignFlatSecondaryDarkBgButton}"
-                  ToolTip="MaterialDesignFlatSecondaryDarkBgButton"
                   Content="Decode"
                   IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}" />
+
+            <StackPanel
+                Margin="0 15"
+                HorizontalAlignment="Left"
+                Orientation="Vertical">
+
+                <Button
+                    Name="BtnUp"
+                    Click="BtnUp_Click"
+                    Style="{StaticResource MaterialDesignFloatingActionMiniSecondaryButton}">
+                    <materialDesign:PackIcon
+                        Kind="ArrowUpBold"
+                        Height="15"
+                        Width="15"/>
+                </Button>
+
+                <Button
+                    Name="BtnDown"
+                    Click="BtnDown_Click"
+                    Style="{StaticResource MaterialDesignFloatingActionMiniSecondaryButton}"
+                    Margin="0 15 0 0">
+                    <materialDesign:PackIcon
+                        Kind="ArrowDownBold"
+                        Height="15"
+                        Width="15"/>
+                </Button>
+            </StackPanel>
+
+            <Image
+                Margin="15"
+                Width="200"
+                Height="200"
+                Name="ImgQr"/>
         </StackPanel>
     </Grid>
 </Window>
