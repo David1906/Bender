@@ -1,0 +1,101 @@
+﻿<Window x:Class="Bender.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:local="clr-namespace:Bender"
+        xmlns:cmp="clr-namespace:Bender.Views.Components"        
+        mc:Ignorable="d"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        TextElement.FontWeight="Regular"
+        TextElement.FontSize="13"
+        TextOptions.TextFormattingMode="Ideal" 
+        TextOptions.TextRenderingMode="Auto"        
+        Background="{DynamicResource MaterialDesignPaper}"
+        FontFamily="{DynamicResource MaterialDesignFont}"
+        Title="Bender" Height="450" Width="800">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="7*"/>
+            <ColumnDefinition Width="3*"/>
+        </Grid.ColumnDefinitions>
+
+        <Grid 
+            Grid.Row="0"
+            Grid.Column="0"
+            Margin="10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <TextBox 
+                    x:Name = "TxtCode"
+                    Margin="0 0 0 25"
+                    materialDesign:HintAssist.Hint="Package 2D Code:"
+                    Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                    materialDesign:TextFieldAssist.HasClearButton="True"
+                    VerticalAlignment="Center" />
+
+            <ListView 
+                Grid.Row="1"
+                ScrollViewer.CanContentScroll="True"
+                ScrollViewer.VerticalScrollBarVisibility="Auto"
+                 Name="lvDataBinding">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <cmp:CodeItem 
+                                MinWidth="450"
+                                Label="{Binding Label}" />
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+
+            <!--<cmp:CodeItem 
+                    x:Name = "ItemSupplier"
+                    Label="Supplier:" />
+                <cmp:CodeItem 
+                    x:Name = "ItemModel"
+                    Label="Model:" />
+                <cmp:CodeItem 
+                    x:Name = "ItemRev"
+                    Label="Rev:" />
+                <cmp:CodeItem 
+                    x:Name = "ItemSupplierPn"
+                    Label="Supplier PN:" />
+                <cmp:CodeItem 
+                    x:Name = "ItemQty"
+                    Label="Qty:" />
+                <cmp:CodeItem 
+                    x:Name = "ItemHHPn"
+                    Label="HH PN:" />
+                <cmp:CodeItem 
+                    x:Name = "ItemDateCode"
+                    Label="Date Code:" />
+                <cmp:CodeItem 
+                    x:Name = "ItemLotNo"
+                    Label="Lot No:" />
+                <cmp:CodeItem 
+                    x:Name = "ItemPkgId"
+                    Label="Pkg Id:" />
+                <cmp:CodeItem 
+                    x:Name = "ItemWorkOrder"
+                    Label="Work Order:" />-->
+        </Grid>
+
+        <StackPanel 
+            Grid.Row="0"
+            Grid.Column="1"
+            Margin="10">
+
+            <Button
+                  Name="BtnDecode"
+                  Click="BtnDecode_Click"
+                  Style="{StaticResource MaterialDesignFlatSecondaryDarkBgButton}"
+                  ToolTip="MaterialDesignFlatSecondaryDarkBgButton"
+                  Content="Decode"
+                  IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}" />
+        </StackPanel>
+    </Grid>
+</Window>
