@@ -1,0 +1,19 @@
+@startuml Bender
+
+class MainWindow {
+
+}
+
+class PackageLabel {
+    + CopyValues(PackageLabel packageLabel)
+    + Decode(string code) : PackageLabel
+    + Encode() : string
+    + SwapUp(PackageLabelItem item)
+    + SwapDown(PackageLabelItem item)
+}
+class PackageLabelItem {}
+
+MainWindow --> PackageLabel
+PackageLabel *--> "1..n" PackageLabelItem
+
+@enduml

@@ -13,18 +13,18 @@ namespace Bender.Tests.Models
         public void Decode_ValidCode()
         {
             var code = new Code("0,1,2,3,4,5,6,7,8,9\n");
-            var format = new List<CodeChunk>
+            var format = new List<LabelItem>
             {
-                new CodeChunk(){Property = "Supplier", Terminator = ","},
-                new CodeChunk(){Property = "Model", Terminator = ","},
-                new CodeChunk(){Property = "Rev", Terminator = ","},
-                new CodeChunk(){Property = "SupplierPn", Terminator = ","},
-                new CodeChunk(){Property = "Qty", Terminator = ","},
-                new CodeChunk(){Property = "HhPn", Terminator = ","},
-                new CodeChunk(){Property = "DateCode", Terminator = ","},
-                new CodeChunk(){Property = "LotNo", Terminator = ","},
-                new CodeChunk(){Property = "PkgId", Terminator = ","},
-                new CodeChunk(){Property = "WorkOrder", Terminator = "\n"}
+                new LabelItem(){PropertyName = "Supplier", Terminator = ","},
+                new LabelItem(){PropertyName = "Model", Terminator = ","},
+                new LabelItem(){PropertyName = "Rev", Terminator = ","},
+                new LabelItem(){PropertyName = "SupplierPn", Terminator = ","},
+                new LabelItem(){PropertyName = "Qty", Terminator = ","},
+                new LabelItem(){PropertyName = "HhPn", Terminator = ","},
+                new LabelItem(){PropertyName = "DateCode", Terminator = ","},
+                new LabelItem(){PropertyName = "LotNo", Terminator = ","},
+                new LabelItem(){PropertyName = "PkgId", Terminator = ","},
+                new LabelItem(){PropertyName = "WorkOrder", Terminator = "\n"}
             };
 
             var result = code.Decode(format);
@@ -46,9 +46,9 @@ namespace Bender.Tests.Models
         {
             var codeText = "0,1,2,3,4,5,6,7,8,9\n";
             var code = new Code(codeText);
-            var format = new List<CodeChunk>
+            var format = new List<LabelItem>
             {
-                new CodeChunk(){Property = "Supplier", Terminator = ""}
+                new LabelItem(){PropertyName = "Supplier", Terminator = ""}
             };
 
             var result = code.Decode(format);

@@ -20,6 +20,7 @@ using System.Reflection;
 using System.IO;
 using QRCoder;
 using System.Drawing;
+using Bender.Enums;
 
 namespace Bender.Views
 {
@@ -28,26 +29,26 @@ namespace Bender.Views
     /// </summary>
     public partial class MainWindow : Window
     {
-        private Format Format { get; set; }
+        private Models.Label Label { get; set; }
 
         public MainWindow()
         {
             InitializeComponent();
-            var FormatItems = new List<CodeChunk>
+            var LabelItems = new List<Models.LabelItem>
             {
-                new CodeChunk() { Property = "Supplier", Terminator = ",", Label = "Supplier:", Mode = "Fixed"},
-                new CodeChunk() { Property = "HhPn", Terminator = ",", Label = "HH PN:", Mode = "Decode"},
-                new CodeChunk() { Property = "Qty", Terminator = ",", Label = "Qty:", Mode = "Decode"},
-                new CodeChunk() { Property = "SupplierPn", Terminator = ",", Label = "Supplier PN:", Mode = "Decode"},
-                new CodeChunk() { Property = "DateCode", Terminator = ",", Label = "Date Code:", Mode = "Decode"},
-                new CodeChunk() { Property = "LotNo", Terminator = ",", Label = "Lot No:", Mode = "Decode"},
-                new CodeChunk() { Property = "PkgId", Terminator = "None", Label = "Pkg Id:", Mode = "Decode"},
+                new Models.LabelItem() { PropertyName = "Supplier", Terminator = Terminators.Comma, Title = "Supplier:", Mode = Modes.Fixed},
+                new Models.LabelItem() { PropertyName = "HhPn", Terminator = Terminators.Comma, Title = "HH PN:", Mode = Modes.Decode},
+                new Models.LabelItem() { PropertyName = "Qty", Terminator = Terminators.Comma, Title = "Qty:", Mode = Modes.Decode},
+                new Models.LabelItem() { PropertyName = "SupplierPn", Terminator = Terminators.Comma, Title = "Supplier PN:", Mode = Modes.Decode},
+                new Models.LabelItem() { PropertyName = "DateCode", Terminator = Terminators.Comma, Title = "Date Code:", Mode = Modes.Decode},
+                new Models.LabelItem() { PropertyName = "LotNo", Terminator = Terminators.Comma, Title = "Lot No:", Mode = Modes.Decode},
+                new Models.LabelItem() { PropertyName = "PkgId", Terminator = Terminators.None, Title = "Pkg Id:", Mode = Modes.Decode},
 
-                new CodeChunk() { Property = "Model", Terminator = "None", Label = "Model:", Mode = "Disabled"},
-                new CodeChunk() { Property = "Rev", Terminator = "None", Label = "Rev:", Mode = "Disabled"},
-                new CodeChunk() { Property = "WorkOrder", Terminator = "None", Label = "Work Order:", Mode = "Disabled"},
+                new Models.LabelItem() { PropertyName = "Model", Terminator = Terminators.None, Title = "Model:", Mode = Modes.Disabled},
+                new Models.LabelItem() { PropertyName = "Rev", Terminator = Terminators.None, Title = "Rev:", Mode = Modes.Disabled},
+                new Models.LabelItem() { PropertyName = "WorkOrder", Terminator = Terminators.None, Title = "Work Order:", Mode = Modes.Disabled},
             };
-            this.Format = new Format(FormatItems);
+            this.Label = new Models.Label(LabelItems);
             this.RefreshListViewCodeItem();
             TxtCode.Focus();
         }
@@ -59,49 +60,42 @@ namespace Bender.Views
 
         private void Decode()
         {
-            var code = new Code(TxtCode.Text);
-            var packageInfo = code.Decode(this.Format);
-            foreach (PropertyInfo prop in packageInfo.GetType().GetProperties())
-            {
-                var type = Nullable.GetUnderlyingType(prop.PropertyType) ?? prop.PropertyType;
-                if (type == typeof(string))
-                {
-                    var value = prop.GetValue(packageInfo, null)?.ToString() ?? "";
-                    this.Format.SetProp(prop.Name, value);
-                }
-            }
+            this.Label.Code = TxtCode.Text;
+            this.Label.Decode();
             this.RefreshListViewCodeItem();
-            this.SetQrImage(code);
+            this.SetQrImage();
             TxtCode.Text = "";
         }
 
         private void BtnUp_Click(object sender, RoutedEventArgs e)
         {
-            var selectedItem = ListViewCodeItem.SelectedItem as CodeChunk;
+            var selectedItem = ListViewCodeItem.SelectedItem as Models.LabelItem;
             if (selectedItem != null)
             {
-                this.Format.SwapUp(selectedItem);
+                this.Label.SwapUp(selectedItem);
             }
+            this.RefreshListViewCodeItem();
         }
 
         private void BtnDown_Click(object sender, RoutedEventArgs e)
         {
-            var selectedItem = ListViewCodeItem.SelectedItem as CodeChunk;
+            var selectedItem = ListViewCodeItem.SelectedItem as Models.LabelItem;
             if (selectedItem != null)
             {
-                this.Format.SwapDown(selectedItem);
+                this.Label.SwapDown(selectedItem);
             }
+            this.RefreshListViewCodeItem();
         }
         private void RefreshListViewCodeItem()
         {
-            ListViewCodeItem.ItemsSource = this.Format.Items;
+            ListViewCodeItem.ItemsSource = this.Label.Items;
             ListViewCodeItem.Items.Refresh();
         }
 
 
-        public void SetQrImage(Code code)
+        public void SetQrImage()
         {
-            ImgQr.Source = code.GenerateQr(this.Format);
+            ImgQr.Source = this.Label.GenerateQRCode();
         }
 
         private void TxtCode_KeyDown(object sender, KeyEventArgs e)

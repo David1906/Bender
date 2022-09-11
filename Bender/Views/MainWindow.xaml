@@ -48,9 +48,9 @@
                 ScrollViewer.VerticalScrollBarVisibility="Auto">
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <cmp:CodeItem 
+                        <cmp:LabelItemControl 
                             MinWidth="600"
-                            Label="{Binding Label}"
+                            Label="{Binding Title}"
                             Mode="{Binding Mode, Mode=TwoWay}"
                             Terminator="{Binding Terminator, Mode=TwoWay}"
                             Value="{Binding Value, Mode=TwoWay}"
