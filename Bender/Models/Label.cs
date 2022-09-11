@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -15,14 +17,26 @@ namespace Bender.Models
     public class Label
     {
         public string Code { get; set; } = "";
-        public List<LabelItem> Items = new List<LabelItem>();
+        public BindingList<LabelItem> Items = new BindingList<LabelItem>();
 
-        public Label(List<LabelItem> items)
+        public Label(BindingList<LabelItem> items)
         {
             this.Items = items;
             this.SetFormatIndexes();
         }
 
+        public void CopyValues(Label label)
+        {
+            foreach (var item in label.Items)
+            {
+                var myItem = this.Items.First(x => x.PropertyName == item.PropertyName);
+                if (myItem != null)
+                {
+                    myItem.Value = item.Value;
+                }
+            }
+            this.Items.ResetBindings();
+        }
         public void Decode()
         {
             var codeCopy = this.Code;
@@ -45,6 +59,7 @@ namespace Bender.Models
                 }
                 item.Value = text;
             }
+            this.Items.ResetBindings();
         }
         public string Encode()
         {
@@ -71,7 +86,7 @@ namespace Bender.Models
         }
         public void SwapUp(LabelItem item)
         {
-            var sourceIndex = this.Items.FindIndex(x => x == item);
+            var sourceIndex = this.Items.IndexOf(item);
             var targetIndex = sourceIndex - 1;
             if (sourceIndex >= 1 && targetIndex >= 0)
             {
@@ -79,10 +94,9 @@ namespace Bender.Models
             }
             this.SetFormatIndexes();
         }
-
         public void SwapDown(LabelItem item)
         {
-            var sourceIndex = this.Items.FindIndex(x => x == item);
+            var sourceIndex = this.Items.IndexOf(item);
             var targetIndex = sourceIndex + 1;
             if (sourceIndex >= 0 && targetIndex < this.Items.Count)
             {
@@ -90,12 +104,14 @@ namespace Bender.Models
             }
             this.SetFormatIndexes();
         }
-
         private void SetFormatIndexes()
         {
             for (int i = 0; i < this.Items.Count; i++)
             {
-                this.Items[i].Index = i + 1;
+                if (this.Items[i].Index != i + 1)
+                {
+                    this.Items[i].Index = i + 1;
+                }
             }
         }
         public BitmapImage GenerateQRCode()

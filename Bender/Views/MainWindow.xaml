@@ -5,7 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:local="clr-namespace:Bender"
-        xmlns:cmp="clr-namespace:Bender.Views.Components"        
+        xmlns:converters="clr-namespace:Bender.Views.Converters"
+        xmlns:cmp="clr-namespace:Bender.Views.Components"     
+        x:Name="root"
         mc:Ignorable="d"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         TextElement.FontWeight="Regular"
@@ -15,10 +17,16 @@
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="{DynamicResource MaterialDesignFont}"
         Title="Bender" Height="650" Width="950">
+
+    <Window.Resources>
+        <converters:ModesConverter x:Key="ModesConverter" />
+        <converters:TerminatorsConverter x:Key="TerminatorsConverter" />
+    </Window.Resources>
+
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="7*"/>
-            <ColumnDefinition Width="3*"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
         <Grid 
@@ -41,69 +49,59 @@
                 KeyDown="TxtCode_KeyDown"
                 TextChanged="TxtCode_TextChanged"/>
 
-            <ListView 
+            <TabControl
                 Grid.Row="2"
-                Name="ListViewCodeItem"
-                ScrollViewer.CanContentScroll="True"
-                ScrollViewer.VerticalScrollBarVisibility="Auto">
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <cmp:LabelItemControl 
-                            MinWidth="600"
-                            Label="{Binding Title}"
-                            Mode="{Binding Mode, Mode=TwoWay}"
-                            Terminator="{Binding Terminator, Mode=TwoWay}"
-                            Value="{Binding Value, Mode=TwoWay}"
-                            Idx="{Binding Index}"/>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
+                materialDesign:ColorZoneAssist.Mode="SecondaryMid">
+                <TabItem
+                    Header="Label In">
+                    <cmp:LabelComponent
+                        x:Name="LabelInComponent"/>
+                </TabItem>
+                <TabItem
+                    Header="Label Out">
+                    <cmp:LabelComponent
+                        x:Name="LabelOutComponent"/>
+                </TabItem>
+            </TabControl>            
         </Grid>
 
-        <StackPanel 
+        <Grid
             Grid.Row="0"
-            Grid.Column="1"
-            Margin="10">
-
-            <Button
-                  Name="BtnDecode"
-                  Click="BtnDecode_Click"
-                  Style="{StaticResource MaterialDesignFlatSecondaryDarkBgButton}"
-                  Content="Decode"
-                  IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}" />
-
-            <StackPanel
-                Margin="0 15"
-                HorizontalAlignment="Left"
-                Orientation="Vertical">
-
-                <Button
-                    Name="BtnUp"
-                    Click="BtnUp_Click"
-                    Style="{StaticResource MaterialDesignFloatingActionMiniSecondaryButton}">
-                    <materialDesign:PackIcon
-                        Kind="ArrowUpBold"
-                        Height="15"
-                        Width="15"/>
-                </Button>
+            Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>            
+                
+            <StackPanel 
+                Grid.Row="0"
+                Margin="10"
+                VerticalAlignment="Center">
+                    
+                <Image
+                    Width="200"
+                    Height="200"
+                    Name="ImgQr"/>
 
                 <Button
-                    Name="BtnDown"
-                    Click="BtnDown_Click"
+                    Name="BtnReload"
                     Style="{StaticResource MaterialDesignFloatingActionMiniSecondaryButton}"
-                    Margin="0 15 0 0">
-                    <materialDesign:PackIcon
-                        Kind="ArrowDownBold"
-                        Height="15"
-                        Width="15"/>
+                    Click="BtnReload_Click">
+                <materialDesign:PackIcon
+                        Kind="Reload"/>
                 </Button>
             </StackPanel>
 
-            <Image
+            <Button
+                Grid.Row="1"
                 Margin="15"
-                Width="200"
-                Height="200"
-                Name="ImgQr"/>
-        </StackPanel>
+                Width="150"
+                Height="60"
+                Name="BtnDecode"
+                Click="BtnDecode_Click"
+                Style="{StaticResource MaterialDesignFlatSecondaryDarkBgButton}"
+                Content="Decode"
+                IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}" />
+        </Grid>        
     </Grid>
 </Window>
