@@ -25,14 +25,17 @@
 
     <Grid>
         <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2*"/>
             <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
         <Grid 
             Grid.Row="0"
             Grid.Column="0"
-            Margin="10">
+            Margin="10"
+            ScrollViewer.CanContentScroll ="True"
+            ScrollViewer.HorizontalScrollBarVisibility="Auto"
+            Width="Auto">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>

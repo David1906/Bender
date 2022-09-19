@@ -24,9 +24,12 @@
         <ListView
             Margin="0 15 0 0"
             Name="LvLabelItems"
+            VirtualizingStackPanel.IsVirtualizing="False"
             ItemsSource="{Binding ElementName=root, Path=MyLabel.Items}">
             <ListView.View>
-                <GridView>
+                <GridView
+                    VirtualizingStackPanel.IsVirtualizing="False"
+                    x:Name ="GridView1">
                     <GridView.Columns>
                         <GridViewColumn
                         Width="Auto">
@@ -43,10 +46,13 @@
                         Width="Auto">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
-                                    <TextBox 
+                                    <TextBox
+                                        Name="TxtValue"
                                         Width="250"
                                         Text="{Binding Value, Mode=TwoWay}"
-                                        Style="{StaticResource MaterialDesignFloatingHintTextBox}" />
+                                        Style="{StaticResource MaterialDesignFloatingHintTextBox}" 
+                                        KeyUp="TxtValue_KeyUp"
+                                        TextChanged="TxtValue_TextChanged"/>
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>

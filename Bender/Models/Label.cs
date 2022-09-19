@@ -53,8 +53,10 @@ namespace Bender.Models
                         }
                         break;
                     case Modes.Fixed:
-                    case Modes.Scann:
                         text = item.Value;
+                        break;
+                    case Modes.Scann:
+                        text = "";
                         break;
                 }
                 item.Value = text;
@@ -129,6 +131,11 @@ namespace Bender.Models
             bitmapimage.CacheOption = BitmapCacheOption.OnLoad;
             bitmapimage.EndInit();
             return bitmapimage;
+        }
+
+        internal List<LabelItem> GetPendingScanItems()
+        {
+            return this.Items.Where(x => x.Mode == Modes.Scann && String.IsNullOrEmpty(x.Value)).ToList();
         }
     }
 }

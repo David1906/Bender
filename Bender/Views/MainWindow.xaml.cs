@@ -44,7 +44,7 @@ namespace Bender.Views
                 new Models.LabelItem() { PropertyName = "DateCode", Terminator = Terminators.Comma, Title = "Date Code:", Mode = Modes.Decode},
                 new Models.LabelItem() { PropertyName = "LotNo", Terminator = Terminators.Comma, Title = "Lot No:", Mode = Modes.Decode},
                 new Models.LabelItem() { PropertyName = "PkgId", Terminator = Terminators.None, Title = "Pkg Id:", Mode = Modes.Decode},
-                new Models.LabelItem() { PropertyName = "Supplier", Terminator = Terminators.None, Title = "Supplier:", Mode = Modes.Fixed},
+                new Models.LabelItem() { PropertyName = "Supplier", Terminator = Terminators.None, Title = "Supplier:", Mode = Modes.Scann},
 
                 new Models.LabelItem() { PropertyName = "Model", Terminator = Terminators.None, Title = "Model:", Mode = Modes.Disabled},
                 new Models.LabelItem() { PropertyName = "Rev", Terminator = Terminators.None, Title = "Rev:", Mode = Modes.Disabled},
@@ -52,6 +52,7 @@ namespace Bender.Views
             };
             this.LabelIn = new Models.Label(LabelInItems);
             LabelInComponent.MyLabel = this.LabelIn;
+            LabelInComponent.ItemChanged += this.OnLabelItemChange;
 
             var LabelOutItems = new BindingList<Models.LabelItem>
             {
@@ -73,6 +74,11 @@ namespace Bender.Views
             TxtCode.Focus();
         }
 
+        private void OnLabelItemChange(LabelItem obj)
+        {
+            this.SetQrImage();
+        }
+
         private void BtnDecode_Click(object sender, RoutedEventArgs e)
         {
             this.Decode();
@@ -88,10 +94,22 @@ namespace Bender.Views
 
         public void SetQrImage()
         {
-            this.LabelOut.CopyValues(this.LabelIn);
-            ImgQr.Source = this.LabelOut.GenerateQRCode();
+            BitmapImage? bitmapImage = null;
+            LabelItem? labelItem = null;
+            var pendingScanItems = this.LabelIn.GetPendingScanItems();
+            if (pendingScanItems.Count > 0)
+            {
+                labelItem = pendingScanItems[0];
+            }
+            else
+            {
+                this.LabelOut.CopyValues(this.LabelIn);
+                bitmapImage = this.LabelOut.GenerateQRCode();
+                TxtCode.Focus();
+            }
+            ImgQr.Source = bitmapImage;
+            LabelInComponent.SelectItem(labelItem);
         }
-
         private void TxtCode_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Return)

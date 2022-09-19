@@ -1,7 +1,10 @@
 ﻿using Bender.Enums;
+using Bender.Models;
+using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -13,6 +16,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using static System.Runtime.CompilerServices.RuntimeHelpers;
 
 namespace Bender.Views.Components
 {
@@ -21,7 +25,7 @@ namespace Bender.Views.Components
     /// </summary>
     public partial class LabelComponent : UserControl
     {
-
+        public Action<LabelItem>? ItemChanged;
         public IEnumerable<Modes> ModesValues
         {
             get { return Enum.GetValues(typeof(Modes)).Cast<Modes>(); }
@@ -69,6 +73,71 @@ namespace Bender.Views.Components
         {
             LvLabelItems.ItemsSource = this.MyLabel.Items;
             LvLabelItems.Items.Refresh();
+        }
+
+        public void SelectItem(LabelItem? labelItem)
+        {
+            this.LvLabelItems.SelectedItem = labelItem;
+            if (labelItem != null)
+            {
+                FocusItem(labelItem);
+            }
+        }
+
+        private void FocusItem(LabelItem labelItem)
+        {
+            this.LvLabelItems.UpdateLayout();
+            var selectedItem = (ListBoxItem)this.LvLabelItems.ItemContainerGenerator.ContainerFromItem(labelItem);
+            var txtValue = GetDescendantByType(selectedItem, typeof(TextBox), "TxtValue") as TextBox;
+            if (txtValue != null)
+            {
+                txtValue.Focus();
+            }
+        }
+        private Visual GetDescendantByType(Visual element, Type type, string name)
+        {
+            if (element == null) return null;
+            if (element.GetType() == type)
+            {
+                FrameworkElement fe = element as FrameworkElement;
+                if (fe != null)
+                {
+                    if (fe.Name == name)
+                    {
+                        return fe;
+                    }
+                }
+            }
+            Visual foundElement = null;
+            if (element is FrameworkElement)
+                (element as FrameworkElement).ApplyTemplate();
+            for (int i = 0;
+                i < VisualTreeHelper.GetChildrenCount(element); i++)
+            {
+                Visual visual = VisualTreeHelper.GetChild(element, i) as Visual;
+                foundElement = GetDescendantByType(visual, type, name);
+                if (foundElement != null)
+                    break;
+            }
+            return foundElement;
+        }
+        private void TxtValue_KeyUp(object sender, KeyEventArgs e)
+        {
+            var txtValue = sender as TextBox;
+            if (e.Key == Key.Enter && this.ItemChanged != null)
+            {
+                this.ItemChanged((LabelItem)this.LvLabelItems.SelectedItem);
+            }
+            ((LabelItem)txtValue.DataContext).Value = txtValue?.Text ?? "";
+        }
+        private void TxtValue_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            var txtValue = sender as TextBox;
+            if (txtValue?.Text?.Contains("\n") == true && this.ItemChanged != null)
+            {
+                this.ItemChanged((LabelItem)this.LvLabelItems.SelectedItem);
+            }
+            ((LabelItem)txtValue.DataContext).Value = txtValue?.Text ?? "";
         }
     }
 }
