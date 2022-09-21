@@ -16,6 +16,9 @@
         TextOptions.TextRenderingMode="Auto"        
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="{DynamicResource MaterialDesignFont}"
+        Activated="root_Activated"
+        Icon="/Resources/Images/icon_bender.ico"
+        WindowStartupLocation="CenterScreen"
         Title="Bender" Height="650" Width="950">
 
     <Window.Resources>
@@ -28,6 +31,10 @@
             <ColumnDefinition Width="2*"/>
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="9*"/>
+            <RowDefinition Height="1*"/>
+        </Grid.RowDefinitions>
 
         <Grid 
             Grid.Row="0"
@@ -50,7 +57,8 @@
                 materialDesign:TextFieldAssist.HasClearButton="True"
                 VerticalAlignment="Center" 
                 KeyDown="TxtCode_KeyDown"
-                TextChanged="TxtCode_TextChanged"/>
+                TextChanged="TxtCode_TextChanged"
+                GotFocus="TxtCode_GotFocus"/>
 
             <TabControl
                 Grid.Row="2"
@@ -105,6 +113,18 @@
                 Style="{StaticResource MaterialDesignFlatSecondaryDarkBgButton}"
                 Content="Decode"
                 IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}" />
-        </Grid>        
+        </Grid>
+
+        <TextBlock
+            Grid.Row="1"
+            Grid.ColumnSpan="2"
+            Name="TxtMsg"
+            TextAlignment="Center"
+            VerticalAlignment="Bottom"
+            Padding="10"
+            FontSize="24"
+            Background="{DynamicResource PrimaryHueMidBrush}"
+            Foreground="White"
+            Text="SCANN PACKAGE 2D CODE"/>
     </Grid>
 </Window>

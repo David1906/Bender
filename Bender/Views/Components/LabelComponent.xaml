@@ -17,7 +17,7 @@
 
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
 
@@ -37,7 +37,8 @@
                                 <DataTemplate>
                                     <materialDesign:Chip
                                     Content="{Binding Title}"
-                                    Icon="{Binding Index}"/>
+                                    Icon="{Binding Index}"
+                                    Click="Chip_Click"/>
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
@@ -52,7 +53,8 @@
                                         Text="{Binding Value, Mode=TwoWay}"
                                         Style="{StaticResource MaterialDesignFloatingHintTextBox}" 
                                         KeyUp="TxtValue_KeyUp"
-                                        TextChanged="TxtValue_TextChanged"/>
+                                        TextChanged="TxtValue_TextChanged"
+                                        GotFocus="TxtValue_GotFocus"/>
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
@@ -117,13 +119,15 @@
 
         <StackPanel
             Grid.Column="1"
-            Margin="0 15"
+            Margin="10 15"
             HorizontalAlignment="Center"
             Orientation="Vertical">
 
             <Button
                 Name="BtnUp"
                 Click="BtnUp_Click"
+                Width="25"
+                Height="25"
                 Style="{StaticResource MaterialDesignFloatingActionMiniSecondaryButton}">
                 <materialDesign:PackIcon
                     Kind="ArrowUpBold"
@@ -134,6 +138,8 @@
             <Button
                 Name="BtnDown"
                 Click="BtnDown_Click"
+                Width="25"
+                Height="25"
                 Style="{StaticResource MaterialDesignFloatingActionMiniSecondaryButton}"
                 Margin="0 15 0 0">
                 <materialDesign:PackIcon

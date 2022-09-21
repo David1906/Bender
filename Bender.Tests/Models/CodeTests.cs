@@ -1,4 +1,5 @@
 using Bender.Models;
+using System.ComponentModel;
 
 namespace Bender.Tests.Models
 {
@@ -12,33 +13,34 @@ namespace Bender.Tests.Models
         [Test]
         public void Decode_ValidCode()
         {
-            var code = new Code("0,1,2,3,4,5,6,7,8,9\n");
-            var format = new List<LabelItem>
+            var format = new BindingList<LabelItem>
             {
-                new LabelItem(){PropertyName = "Supplier", Terminator = ","},
-                new LabelItem(){PropertyName = "Model", Terminator = ","},
-                new LabelItem(){PropertyName = "Rev", Terminator = ","},
-                new LabelItem(){PropertyName = "SupplierPn", Terminator = ","},
-                new LabelItem(){PropertyName = "Qty", Terminator = ","},
-                new LabelItem(){PropertyName = "HhPn", Terminator = ","},
-                new LabelItem(){PropertyName = "DateCode", Terminator = ","},
-                new LabelItem(){PropertyName = "LotNo", Terminator = ","},
-                new LabelItem(){PropertyName = "PkgId", Terminator = ","},
-                new LabelItem(){PropertyName = "WorkOrder", Terminator = "\n"}
+                new LabelItem(){PropertyName = "Supplier", Terminator = Enums.Terminators.Comma},
+                new LabelItem(){PropertyName = "Model", Terminator = Enums.Terminators.Comma},
+                new LabelItem(){PropertyName = "Rev", Terminator = Enums.Terminators.Comma},
+                new LabelItem(){PropertyName = "SupplierPn", Terminator = Enums.Terminators.Comma},
+                new LabelItem(){PropertyName = "Qty", Terminator = Enums.Terminators.Comma},
+                new LabelItem(){PropertyName = "HhPn", Terminator = Enums.Terminators.Comma},
+                new LabelItem(){PropertyName = "DateCode", Terminator = Enums.Terminators.Comma},
+                new LabelItem(){PropertyName = "LotNo", Terminator = Enums.Terminators.Comma},
+                new LabelItem(){PropertyName = "PkgId", Terminator = Enums.Terminators.Comma},
+                new LabelItem(){PropertyName = "WorkOrder", Terminator = Enums.Terminators.CR}
             };
+            var label = new Label(format);
+            label.Code = "0,1,2,3,4,5,6,7,8,9\n";
 
-            var result = code.Decode(format);
+            label.Decode();
 
-            Assert.That(result.Supplier, Is.EqualTo("0"));
-            Assert.That(result.Model, Is.EqualTo("1"));
-            Assert.That(result.Rev, Is.EqualTo("2"));
-            Assert.That(result.SupplierPn, Is.EqualTo("3"));
-            Assert.That(result.Qty, Is.EqualTo("4"));
-            Assert.That(result.HhPn, Is.EqualTo("5"));
-            Assert.That(result.DateCode, Is.EqualTo("6"));
-            Assert.That(result.LotNo, Is.EqualTo("7"));
-            Assert.That(result.PkgId, Is.EqualTo("8"));
-            Assert.That(result.WorkOrder, Is.EqualTo("9"));
+            Assert.That(label.Items[0].Value, Is.EqualTo("0"));
+            Assert.That(label.Items[1].Value, Is.EqualTo("1"));
+            Assert.That(label.Items[2].Value, Is.EqualTo("2"));
+            Assert.That(label.Items[3].Value, Is.EqualTo("3"));
+            Assert.That(label.Items[4].Value, Is.EqualTo("4"));
+            Assert.That(label.Items[5].Value, Is.EqualTo("5"));
+            Assert.That(label.Items[6].Value, Is.EqualTo("6"));
+            Assert.That(label.Items[7].Value, Is.EqualTo("7"));
+            Assert.That(label.Items[8].Value, Is.EqualTo("8"));
+            Assert.That(label.Items[9].Value, Is.EqualTo("9"));
         }
 
         [Test]

@@ -26,6 +26,7 @@ namespace Bender.Views.Components
     public partial class LabelComponent : UserControl
     {
         public Action<LabelItem>? ItemChanged;
+        public Action<LabelItem?>? GotItemFocus;
         public IEnumerable<Modes> ModesValues
         {
             get { return Enum.GetValues(typeof(Modes)).Cast<Modes>(); }
@@ -138,6 +139,24 @@ namespace Bender.Views.Components
                 this.ItemChanged((LabelItem)this.LvLabelItems.SelectedItem);
             }
             ((LabelItem)txtValue.DataContext).Value = txtValue?.Text ?? "";
+        }
+
+        private void TxtValue_GotFocus(object sender, RoutedEventArgs e)
+        {
+            var txtValue = sender as TextBox;
+            if (txtValue != null && this.GotItemFocus != null)
+            {
+                this.GotItemFocus((LabelItem)txtValue.DataContext);
+
+            }
+        }
+        private void Chip_Click(object sender, RoutedEventArgs e)
+        {
+            var chip = sender as MaterialDesignThemes.Wpf.Chip;
+            if (chip != null)
+            {
+                this.SelectItem((LabelItem)chip.DataContext);
+            }
         }
     }
 }

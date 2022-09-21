@@ -29,5 +29,17 @@ namespace Bender.Models
                 return !Terminator.Equals(Terminators.None);
             }
         }
+
+        public string GetInstructionText()
+        {
+            var text = "";
+            switch (this.Mode)
+            {
+                case Modes.Scann:
+                    text = $"Scann {this.Title.Replace(":", "")}";
+                    break;
+            }
+            return text;
+        }
     }
 }

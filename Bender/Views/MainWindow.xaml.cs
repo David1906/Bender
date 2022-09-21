@@ -43,7 +43,7 @@ namespace Bender.Views
                 new Models.LabelItem() { PropertyName = "SupplierPn", Terminator = Terminators.Comma, Title = "Supplier PN:", Mode = Modes.Decode},
                 new Models.LabelItem() { PropertyName = "DateCode", Terminator = Terminators.Comma, Title = "Date Code:", Mode = Modes.Decode},
                 new Models.LabelItem() { PropertyName = "LotNo", Terminator = Terminators.Comma, Title = "Lot No:", Mode = Modes.Decode},
-                new Models.LabelItem() { PropertyName = "PkgId", Terminator = Terminators.None, Title = "Pkg Id:", Mode = Modes.Decode},
+                new Models.LabelItem() { PropertyName = "PkgId", Terminator = Terminators.Comma, Title = "Pkg Id:", Mode = Modes.Decode},
                 new Models.LabelItem() { PropertyName = "Supplier", Terminator = Terminators.None, Title = "Supplier:", Mode = Modes.Scann},
 
                 new Models.LabelItem() { PropertyName = "Model", Terminator = Terminators.None, Title = "Model:", Mode = Modes.Disabled},
@@ -53,16 +53,17 @@ namespace Bender.Views
             this.LabelIn = new Models.Label(LabelInItems);
             LabelInComponent.MyLabel = this.LabelIn;
             LabelInComponent.ItemChanged += this.OnLabelItemChange;
+            LabelInComponent.GotItemFocus += this.OnGotItemFocus;
 
             var LabelOutItems = new BindingList<Models.LabelItem>
             {
-                new Models.LabelItem() { PropertyName = "Supplier", Terminator = Terminators.Comma, Title = "Supplier:", Mode = Modes.Decode},
                 new Models.LabelItem() { PropertyName = "HhPn", Terminator = Terminators.Comma, Title = "HH PN:", Mode = Modes.Decode},
                 new Models.LabelItem() { PropertyName = "Qty", Terminator = Terminators.Comma, Title = "Qty:", Mode = Modes.Decode},
                 new Models.LabelItem() { PropertyName = "SupplierPn", Terminator = Terminators.Comma, Title = "Supplier PN:", Mode = Modes.Decode},
                 new Models.LabelItem() { PropertyName = "DateCode", Terminator = Terminators.Comma, Title = "Date Code:", Mode = Modes.Decode},
                 new Models.LabelItem() { PropertyName = "LotNo", Terminator = Terminators.Comma, Title = "Lot No:", Mode = Modes.Decode},
-                new Models.LabelItem() { PropertyName = "PkgId", Terminator = Terminators.None, Title = "Pkg Id:", Mode = Modes.Decode},
+                new Models.LabelItem() { PropertyName = "PkgId", Terminator = Terminators.Comma, Title = "Pkg Id:", Mode = Modes.Decode},
+                new Models.LabelItem() { PropertyName = "Supplier", Terminator = Terminators.None, Title = "Supplier:", Mode = Modes.Decode},
 
                 new Models.LabelItem() { PropertyName = "Model", Terminator = Terminators.None, Title = "Model:", Mode = Modes.Disabled},
                 new Models.LabelItem() { PropertyName = "Rev", Terminator = Terminators.None, Title = "Rev:", Mode = Modes.Disabled},
@@ -74,7 +75,17 @@ namespace Bender.Views
             TxtCode.Focus();
         }
 
-        private void OnLabelItemChange(LabelItem obj)
+        private void OnGotItemFocus(LabelItem? labelItem)
+        {
+            var text = "";
+            if (labelItem != null)
+            {
+                text = labelItem.GetInstructionText();
+            }
+            TxtMsg.Text = text;
+        }
+
+        private void OnLabelItemChange(LabelItem labelItem)
         {
             this.SetQrImage();
         }
@@ -86,9 +97,12 @@ namespace Bender.Views
 
         private void Decode()
         {
-            this.LabelIn.Code = TxtCode.Text;
-            this.LabelIn.Decode();
-            this.SetQrImage();
+            if (!this.LabelOut.Code.Equals(TxtCode.Text))
+            {
+                this.LabelIn.Code = TxtCode.Text;
+                this.LabelIn.Decode();
+                this.SetQrImage();
+            }
             TxtCode.Text = "";
         }
 
@@ -129,6 +143,16 @@ namespace Bender.Views
         private void BtnReload_Click(object sender, RoutedEventArgs e)
         {
             this.SetQrImage();
+        }
+        private void root_Activated(object sender, EventArgs e)
+        {
+            TxtCode.Focus();
+            TxtCode.SelectAll();
+        }
+
+        private void TxtCode_GotFocus(object sender, RoutedEventArgs e)
+        {
+            TxtMsg.Text = "Scann Package 2D Code";
         }
     }
 }

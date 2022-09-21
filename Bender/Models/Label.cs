@@ -39,7 +39,7 @@ namespace Bender.Models
         }
         public void Decode()
         {
-            var codeCopy = this.Code;
+            var codeCopy = this.Code.Replace("'", "-");
             foreach (var item in this.Items)
             {
                 var text = "";
@@ -47,9 +47,10 @@ namespace Bender.Models
                 {
                     case Modes.Decode:
                         text = this.DecodeValue(item, codeCopy);
-                        if (codeCopy.Length > 0)
+                        var textEnd = text.Length + item.Terminator.DefaultValue().Length;
+                        if (codeCopy.Length > 0 && textEnd <= codeCopy.Length)
                         {
-                            codeCopy = codeCopy.Remove(0, text.Length + item.Terminator.DefaultValue().Length);
+                            codeCopy = codeCopy.Remove(0, textEnd);
                         }
                         break;
                     case Modes.Fixed:
@@ -66,21 +67,21 @@ namespace Bender.Models
         public string Encode()
         {
             var enabledItems = this.Items.Where(x => !x.IsDisabled).ToList();
-            var text = "";
+            this.Code = "";
             foreach (var item in enabledItems)
             {
-                text += item.Value + item.Terminator.DefaultValue();
+                this.Code += item.Value + item.Terminator.DefaultValue();
             }
-            return text;
+            return this.Code;
         }
         private string DecodeValue(LabelItem item, string text)
         {
             var terminatorIndex = text.IndexOf(item.Terminator.DefaultValue());
-            if (!item.HasTerminator)
+            if (!item.HasTerminator || terminatorIndex < 0)
             {
                 terminatorIndex = text.Length;
             }
-            if (terminatorIndex > -1)
+            if (terminatorIndex <= text.Length)
             {
                 return text[..terminatorIndex];
             }
