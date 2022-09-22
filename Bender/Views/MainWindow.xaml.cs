@@ -22,6 +22,7 @@ using QRCoder;
 using System.Drawing;
 using Bender.Enums;
 using System.ComponentModel;
+using Bender.Controllers;
 
 namespace Bender.Views
 {
@@ -73,6 +74,14 @@ namespace Bender.Views
             LabelOutComponent.MyLabel = this.LabelOut;
 
             TxtCode.Focus();
+            PositionWindow();
+        }
+
+        private void PositionWindow()
+        {
+            var desktopWorkingArea = System.Windows.SystemParameters.WorkArea;
+            this.Left = desktopWorkingArea.Right - this.Width;
+            this.Top = (desktopWorkingArea.Bottom - this.Height)/2;
         }
 
         private void OnGotItemFocus(LabelItem? labelItem)
@@ -120,6 +129,7 @@ namespace Bender.Views
                 this.LabelOut.CopyValues(this.LabelIn);
                 bitmapImage = this.LabelOut.GenerateQRCode();
                 TxtCode.Focus();
+                ProcessHelper.SetFocusToExternalApp(TxtFocusWindow.Text);
             }
             ImgQr.Source = bitmapImage;
             LabelInComponent.SelectItem(labelItem);

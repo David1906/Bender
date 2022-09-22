@@ -18,7 +18,8 @@
         FontFamily="{DynamicResource MaterialDesignFont}"
         Activated="root_Activated"
         Icon="/Resources/Images/icon_bender.ico"
-        WindowStartupLocation="CenterScreen"
+        WindowStartupLocation="Manual"
+        Left="0" Top="0"
         Title="Bender" Height="650" Width="950">
 
     <Window.Resources>
@@ -73,7 +74,7 @@
                     <cmp:LabelComponent
                         x:Name="LabelOutComponent"/>
                 </TabItem>
-            </TabControl>            
+            </TabControl>
         </Grid>
 
         <Grid
@@ -82,13 +83,14 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>            
-                
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
             <StackPanel 
                 Grid.Row="0"
                 Margin="10"
                 VerticalAlignment="Center">
-                    
+
                 <Image
                     Width="200"
                     Height="200"
@@ -98,7 +100,7 @@
                     Name="BtnReload"
                     Style="{StaticResource MaterialDesignFloatingActionMiniSecondaryButton}"
                     Click="BtnReload_Click">
-                <materialDesign:PackIcon
+                    <materialDesign:PackIcon
                         Kind="Reload"/>
                 </Button>
             </StackPanel>
@@ -113,6 +115,17 @@
                 Style="{StaticResource MaterialDesignFlatSecondaryDarkBgButton}"
                 Content="Decode"
                 IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}" />
+
+            <TextBox 
+                Grid.Row="2"
+                x:Name = "TxtFocusWindow"
+                Width="150"
+                materialDesign:HintAssist.Hint="Focus Process Name"
+                ToolTip="Name of the process to focus the window"
+                Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                Text="PCBunseal_ScanPKGID_2"
+                Foreground="Gray"
+                VerticalAlignment="Center" />
         </Grid>
 
         <TextBlock
