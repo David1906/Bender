@@ -1,29 +1,19 @@
-﻿using Bender.Enums;
-using Bender.Models;
-using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using static System.Runtime.CompilerServices.RuntimeHelpers;
+using System.Windows.Input;
+using System.Windows.Controls;
+using System.Linq;
+using System.Collections.Generic;
+using Bender.Models;
+using Bender.Enums;
 
-namespace Bender.Views.Components
+namespace Bender.Views
 {
     /// <summary>
-    /// Interaction logic for LabelComponent.xaml
+    /// Interaction logic for LabelView.xaml
     /// </summary>
-    public partial class LabelComponent : UserControl
+    public partial class LabelView : UserControl
     {
         public Action<LabelItem>? ItemChanged;
         public Action<LabelItem?>? GotItemFocus;
@@ -42,10 +32,10 @@ namespace Bender.Views.Components
             get { return (Models.Label)GetValue(MyLabelProperty); }
             set { SetValue(MyLabelProperty, value); RefreshListViewCodeItem(); }
         }
-        public static readonly DependencyProperty MyLabelProperty = DependencyProperty.Register("MyLabel", typeof(Models.Label), typeof(LabelComponent), new PropertyMetadata(null));
+        public static readonly DependencyProperty MyLabelProperty = DependencyProperty.Register("MyLabel", typeof(Models.Label), typeof(LabelView), new PropertyMetadata(null));
 
 
-        public LabelComponent()
+        public LabelView()
         {
             InitializeComponent();
         }

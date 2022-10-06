@@ -1,14 +1,12 @@
-﻿using System;
+﻿using Bender.Enums;
+using Bender.Extensions;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Data;
-using Bender.Enums;
-using Bender.Extensions;
+using System;
 
 namespace Bender.Views.Converters
 {

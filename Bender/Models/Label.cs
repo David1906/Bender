@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Bender.Enums;
+using Bender.Extensions;
+using QRCoder;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -8,9 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
-using Bender.Enums;
-using Bender.Extensions;
-using QRCoder;
+using System;
 
 namespace Bender.Models
 {
@@ -133,10 +133,17 @@ namespace Bender.Models
             bitmapimage.EndInit();
             return bitmapimage;
         }
-
         internal List<LabelItem> GetPendingScanItems()
         {
             return this.Items.Where(x => x.Mode == Modes.Scann && String.IsNullOrEmpty(x.Value)).ToList();
+        }
+        public bool IsComplete()
+        {
+            return this.GetPendingScanItems().Count == 0;
+        }
+        public bool EqualsCode(Label label)
+        {
+            return this.Code == label.Code;
         }
     }
 }
