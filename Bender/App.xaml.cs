@@ -1,4 +1,5 @@
-﻿using Bender.Views;
+﻿using Bender.DataAccess;
+using Bender.Views;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -6,6 +7,7 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using Microsoft.EntityFrameworkCore;
 
 namespace Bender
 {
@@ -20,6 +22,7 @@ namespace Bender
 
         private void Application_Startup(object sender, StartupEventArgs e)
         {
+            new BenderContext().Initialize();
             new MainWindow().Show();
         }
     }

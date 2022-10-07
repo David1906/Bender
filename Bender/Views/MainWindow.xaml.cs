@@ -3,6 +3,8 @@ using System.Windows;
 using System.ComponentModel;
 using Bender.Models;
 using Bender.Enums;
+using Bender.DataAccess;
+using Bender.Extensions;
 
 namespace Bender.Views
 {
@@ -14,41 +16,28 @@ namespace Bender.Views
         public MainWindow()
         {
             InitializeComponent();
-            var LabelInItems = new BindingList<Models.LabelItem>
-            {
-                new Models.LabelItem() { PropertyName = "HhPn", Terminator = Terminators.Comma, Title = "HH PN:", Mode = Modes.Decode},
-                new Models.LabelItem() { PropertyName = "Qty", Terminator = Terminators.Comma, Title = "Qty:", Mode = Modes.Decode},
-                new Models.LabelItem() { PropertyName = "SupplierPn", Terminator = Terminators.Comma, Title = "Supplier PN:", Mode = Modes.Decode},
-                new Models.LabelItem() { PropertyName = "DateCode", Terminator = Terminators.Comma, Title = "Date Code:", Mode = Modes.Decode},
-                new Models.LabelItem() { PropertyName = "LotNo", Terminator = Terminators.Comma, Title = "Lot No:", Mode = Modes.Decode},
-                new Models.LabelItem() { PropertyName = "PkgId", Terminator = Terminators.Comma, Title = "Pkg Id:", Mode = Modes.Decode},
-                new Models.LabelItem() { PropertyName = "Supplier", Terminator = Terminators.None, Title = "Supplier:", Mode = Modes.Scann},
-
-                new Models.LabelItem() { PropertyName = "Model", Terminator = Terminators.None, Title = "Model:", Mode = Modes.Disabled},
-                new Models.LabelItem() { PropertyName = "Rev", Terminator = Terminators.None, Title = "Rev:", Mode = Modes.Disabled},
-                new Models.LabelItem() { PropertyName = "WorkOrder", Terminator = Terminators.None, Title = "Work Order:", Mode = Modes.Disabled},
-            };
-            var LabelOutItems = new BindingList<Models.LabelItem>
-            {
-                new Models.LabelItem() { PropertyName = "HhPn", Terminator = Terminators.Comma, Title = "HH PN:", Mode = Modes.Decode},
-                new Models.LabelItem() { PropertyName = "Qty", Terminator = Terminators.Comma, Title = "Qty:", Mode = Modes.Decode},
-                new Models.LabelItem() { PropertyName = "SupplierPn", Terminator = Terminators.Comma, Title = "Supplier PN:", Mode = Modes.Decode},
-                new Models.LabelItem() { PropertyName = "DateCode", Terminator = Terminators.Comma, Title = "Date Code:", Mode = Modes.Decode},
-                new Models.LabelItem() { PropertyName = "LotNo", Terminator = Terminators.Comma, Title = "Lot No:", Mode = Modes.Decode},
-                new Models.LabelItem() { PropertyName = "PkgId", Terminator = Terminators.Comma, Title = "Pkg Id:", Mode = Modes.Decode},
-                new Models.LabelItem() { PropertyName = "Supplier", Terminator = Terminators.None, Title = "Supplier:", Mode = Modes.Decode},
-
-                new Models.LabelItem() { PropertyName = "Model", Terminator = Terminators.None, Title = "Model:", Mode = Modes.Disabled},
-                new Models.LabelItem() { PropertyName = "Rev", Terminator = Terminators.None, Title = "Rev:", Mode = Modes.Disabled},
-                new Models.LabelItem() { PropertyName = "WorkOrder", Terminator = Terminators.None, Title = "Work Order:", Mode = Modes.Disabled},
-            };
-            this.LabelFormatterView.LabelFormatter = new LabelFormatter(
-                new Models.Label(LabelInItems),
-                new Models.Label(LabelOutItems));
-            this.LabelFormatterView.FocusTxtCode();
+            ApplyLabelFormat();
             PositionWindowToRigthCenter();
         }
 
+        private void ApplyLabelFormat()
+        {
+            var mainConfig = new MainConfigDAO();
+            var labelDAO = new LabelDAO();
+            var labelIn = labelDAO.Find(mainConfig.LabelInName);
+            var labelOut = labelDAO.Find(mainConfig.LabelOutName);
+            if (labelIn == null || labelOut == null)
+            {
+                this.ShowError(Message.InvalidFormat.ToDescriptionString());
+                return;
+            }
+            this.LabelFormatterView.LabelFormatter = new LabelFormatter(labelIn, labelOut);
+            this.LabelFormatterView.FocusTxtCode();
+        }
+        private void ShowError(string msg)
+        {
+            MessageBox.Show(msg);
+        }
         private void PositionWindowToRigthCenter()
         {
             var desktopWorkingArea = System.Windows.SystemParameters.WorkArea;

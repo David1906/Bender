@@ -17,6 +17,8 @@ namespace Bender.Models
     public class Label
     {
         public string Code { get; set; } = "";
+        public string Name { get; set; }
+
         public BindingList<LabelItem> Items = new BindingList<LabelItem>();
 
         public Label(BindingList<LabelItem> items)

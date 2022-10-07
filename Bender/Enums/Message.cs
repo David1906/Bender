@@ -10,6 +10,8 @@ namespace Bender.Enums
     public enum Message
     {
         [Description("Scann Package 2D Code")]
-        ScannPackageCode
+        ScannPackageCode,
+        [Description("Invalid format, please verify configuration")]
+        InvalidFormat
     }
 }

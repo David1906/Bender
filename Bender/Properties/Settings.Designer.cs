@@ -25,13 +25,25 @@ namespace Bender.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string Format {
+        [global::System.Configuration.DefaultSettingValueAttribute("AVANTE")]
+        public string LABEL_IN_NAME {
             get {
-                return ((string)(this["Format"]));
+                return ((string)(this["LABEL_IN_NAME"]));
             }
             set {
-                this["Format"] = value;
+                this["LABEL_IN_NAME"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("AUTO_LABEL_OUT")]
+        public string LABEL_OUT_NAME {
+            get {
+                return ((string)(this["LABEL_OUT_NAME"]));
+            }
+            set {
+                this["LABEL_OUT_NAME"] = value;
             }
         }
     }

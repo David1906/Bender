@@ -2,8 +2,11 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Bender.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
-    <Setting Name="Format" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
+    <Setting Name="LABEL_IN_NAME" Type="System.String" Scope="User">
+      <Value Profile="(Default)">AVANTE</Value>
+    </Setting>
+    <Setting Name="LABEL_OUT_NAME" Type="System.String" Scope="User">
+      <Value Profile="(Default)">AUTO_LABEL_OUT</Value>
     </Setting>
   </Settings>
 </SettingsFile>
