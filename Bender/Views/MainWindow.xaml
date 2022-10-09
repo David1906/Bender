@@ -6,6 +6,7 @@
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:local="clr-namespace:Bender"
         xmlns:views="clr-namespace:Bender.Views"
+        xmlns:converters="clr-namespace:Bender.Views.Converters"
         x:Name="root"
         mc:Ignorable="d"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
@@ -21,8 +22,111 @@
         Left="0" Top="0"
         Title="Bender" Height="650" Width="950">
 
+    <Window.Resources>
+        <converters:MenuVisibilitiConverter x:Key="MenuVisibilitiConverter" />
+    </Window.Resources>
+
     <Grid>
-        <views:LabelFormatterView
-            x:Name="LabelFormatterView"/>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <materialDesign:ColorZone
+            Grid.Row="0"
+            Mode="SecondaryMid"
+            Padding="8">
+            <StackPanel
+                Orientation="Horizontal">
+                <ToggleButton
+                    Width="24"
+                    Cursor="Hand"
+                    Style="{StaticResource MaterialDesignHamburgerToggleButton}" 
+                    IsChecked="{Binding ElementName=root, Path=IsMenuVisible, Mode=TwoWay}"/>
+                <TextBlock
+                  VerticalAlignment="Center"
+                  Margin="16 0 0 0"
+                  Text="Bender - Package Code Formatter" />
+            </StackPanel>
+        </materialDesign:ColorZone>
+
+        <TabControl
+            Style="{StaticResource MaterialDesignNavigationRailTabControl}"
+            Visibility="Visible"
+            Grid.Row="1"
+            TabStripPlacement="Left">
+            <TabItem
+                Name="TabMain"
+                Visibility="{Binding ElementName=root, Path=IsMenuVisible, Converter={StaticResource MenuVisibilitiConverter}}"
+                Selector.Selected="TabMain_Selected">
+                <TabItem.Header>
+                    <StackPanel
+                        Width="auto"
+                        Height="auto">
+                        <materialDesign:PackIcon
+                            Width="24"
+                            Height="24"
+                            HorizontalAlignment="Center"
+                            Kind="QrcodeScan" />
+                        <TextBlock
+                            HorizontalAlignment="Center"
+                            TextAlignment="Center"
+                            TextWrapping="Wrap"
+                            Text="Main" />
+                    </StackPanel>
+                </TabItem.Header>
+                <views:LabelFormatterView
+                    x:Name="LabelFormatterView"/>
+            </TabItem>
+            <TabItem
+                Name="TabFormats"
+                Visibility="{Binding ElementName=root, Path=IsMenuVisible, Converter={StaticResource MenuVisibilitiConverter}}"
+                Selector.Selected="TabFormats_Selected">
+                <TabItem.Header>
+                    <StackPanel
+                        Width="auto"
+                        Height="auto">
+                        <materialDesign:PackIcon
+                            Width="24"
+                            Height="24"
+                            HorizontalAlignment="Center"
+                            Kind="QrcodeEdit" />
+                        <TextBlock
+                            HorizontalAlignment="Center"
+                            TextAlignment="Center"
+                            TextWrapping="Wrap"
+                            Text="Formats" />
+                    </StackPanel>
+                </TabItem.Header>
+                <TextBlock>
+                    Formats
+                </TextBlock>
+            </TabItem>
+            <TabItem
+                Name="TabConfig"
+                Visibility="{Binding ElementName=root, Path=IsMenuVisible, Converter={StaticResource MenuVisibilitiConverter}}"
+                Selector.Selected="TabConfig_Selected">
+                <TabItem.Header>
+                    <StackPanel
+                        Width="auto"
+                        Height="auto">
+                        <materialDesign:PackIcon
+                            Width="24"
+                            Height="24"
+                            HorizontalAlignment="Center"
+                            Kind="CogOutline" />
+                        <TextBlock
+                            HorizontalAlignment="Center"
+                            TextAlignment="Center"
+                            TextWrapping="Wrap"
+                            Text="Config" />
+                    </StackPanel>
+                </TabItem.Header>
+                <TextBlock>
+                    <views:ConfigView
+                        x:Name="ConfigView"/>
+                </TextBlock>
+            </TabItem>
+        </TabControl>
     </Grid>
 </Window>

@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Bender.Migrations
 {
     [DbContext(typeof(BenderContext))]
-    [Migration("20221007172432_LabelItem_Delete_Cascade")]
-    partial class LabelItem_Delete_Cascade
+    [Migration("20221009030024_InitialMigration")]
+    partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -42,24 +42,20 @@ namespace Bender.Migrations
                     b.Property<int>("Index")
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("Key")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<int>("LabelId")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("Mode")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("PropertyName")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
                     b.Property<int>("Terminator")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Value")
                         .IsRequired()
                         .HasColumnType("TEXT");
 

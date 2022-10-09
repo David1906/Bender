@@ -12,6 +12,7 @@ using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using System.Windows;
 using System;
+using Bender.DataAccess;
 
 namespace Bender.Views
 {
@@ -20,6 +21,7 @@ namespace Bender.Views
     /// </summary>
     public partial class LabelFormatterView : UserControl
     {
+        private MainConfigDAO MainConfigDAO { get; set; } = new MainConfigDAO();
         private LabelFormatter? _labelFormatter;
         public LabelFormatter? LabelFormatter
         {
@@ -30,8 +32,10 @@ namespace Bender.Views
             set
             {
                 _labelFormatter = value;
-                LabelInComponent.MyLabel = _labelFormatter?.LabelIn;
-                LabelOutComponent.MyLabel = _labelFormatter?.LabelOut;
+                if (_labelFormatter != null)
+                {
+                    LabelInComponent.MyLabel = _labelFormatter.LabelIn;
+                }
             }
         }
 
@@ -94,7 +98,7 @@ namespace Bender.Views
             if (this.LabelFormatter?.CanGenerateQr() == true)
             {
                 bitmapImage = this.LabelFormatter.GenerateQrImage();
-                ProcessHelper.SetFocusToExternalApp(TxtFocusWindow.Text);
+                ProcessHelper.SetFocusToExternalApp(this.MainConfigDAO.FocusProcessName);
                 TxtCode.Focus();
             }
             else

@@ -12,7 +12,7 @@ namespace Bender.Models
         public int Index { get; set; }
         public string Value { get; set; } = "";
         public string Title { get; set; } = "";
-        public string PropertyName { get; set; } = "";
+        public string Key { get; set; } = "";
         public Modes Mode { get; set; } = Modes.Disabled;
         public Terminators Terminator { get; set; } = Terminators.Comma;
         public bool IsDisabled

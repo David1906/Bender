@@ -57,8 +57,8 @@ namespace Bender.DataAccess
         public Label? Find(string name)
         {
             var labelDAO = this.Context.Labels
-                .Include(x => x.Items)
                 .Where(x => x.Name == name)
+                .Include(x => x.Items.OrderBy(x => x.Index))
                 .FirstOrDefault();
             if (labelDAO == null)
             {
@@ -75,6 +75,11 @@ namespace Bender.DataAccess
                 c.CreateMap<LabelItemDAO, LabelItem>();
             });
             return new MapperHelper(configuration).Map<Label>(labelDAO);
+        }
+
+        internal List<string> FindAllNames()
+        {
+            return this.Context.Labels.Select(x => x.Name).ToList();
         }
     }
 }

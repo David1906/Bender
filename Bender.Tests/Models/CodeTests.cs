@@ -15,16 +15,16 @@ namespace Bender.Tests.Models
         {
             var format = new BindingList<LabelItem>
             {
-                new LabelItem(){PropertyName = "Supplier", Terminator = Enums.Terminators.Comma},
-                new LabelItem(){PropertyName = "Model", Terminator = Enums.Terminators.Comma},
-                new LabelItem(){PropertyName = "Rev", Terminator = Enums.Terminators.Comma},
-                new LabelItem(){PropertyName = "SupplierPn", Terminator = Enums.Terminators.Comma},
-                new LabelItem(){PropertyName = "Qty", Terminator = Enums.Terminators.Comma},
-                new LabelItem(){PropertyName = "HhPn", Terminator = Enums.Terminators.Comma},
-                new LabelItem(){PropertyName = "DateCode", Terminator = Enums.Terminators.Comma},
-                new LabelItem(){PropertyName = "LotNo", Terminator = Enums.Terminators.Comma},
-                new LabelItem(){PropertyName = "PkgId", Terminator = Enums.Terminators.Comma},
-                new LabelItem(){PropertyName = "WorkOrder", Terminator = Enums.Terminators.CR}
+                new LabelItem(){Key = "Supplier", Terminator = Enums.Terminators.Comma},
+                new LabelItem(){Key = "Model", Terminator = Enums.Terminators.Comma},
+                new LabelItem(){Key = "Rev", Terminator = Enums.Terminators.Comma},
+                new LabelItem(){Key = "SupplierPn", Terminator = Enums.Terminators.Comma},
+                new LabelItem(){Key = "Qty", Terminator = Enums.Terminators.Comma},
+                new LabelItem(){Key = "HhPn", Terminator = Enums.Terminators.Comma},
+                new LabelItem(){Key = "DateCode", Terminator = Enums.Terminators.Comma},
+                new LabelItem(){Key = "LotNo", Terminator = Enums.Terminators.Comma},
+                new LabelItem(){Key = "PkgId", Terminator = Enums.Terminators.Comma},
+                new LabelItem(){Key = "WorkOrder", Terminator = Enums.Terminators.CR}
             };
             var label = new Label(format);
             label.Code = "0,1,2,3,4,5,6,7,8,9\n";
@@ -50,7 +50,7 @@ namespace Bender.Tests.Models
             var code = new Code(codeText);
             var format = new List<LabelItem>
             {
-                new LabelItem(){PropertyName = "Supplier", Terminator = ""}
+                new LabelItem(){Key = "Supplier", Terminator = ""}
             };
 
             var result = code.Decode(format);

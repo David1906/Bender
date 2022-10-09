@@ -13,10 +13,16 @@ namespace Bender.Views
     /// </summary>
     public partial class MainWindow : Window
     {
+        public static readonly DependencyProperty IsMenuVisibleProperty = DependencyProperty.Register("IsMenuVisible", typeof(bool), typeof(MainWindow), new PropertyMetadata(false));
+        public bool IsMenuVisible
+        {
+            get { return (bool)GetValue(IsMenuVisibleProperty); }
+            set { SetValue(IsMenuVisibleProperty, value); }
+        }
+
         public MainWindow()
         {
             InitializeComponent();
-            ApplyLabelFormat();
             PositionWindowToRigthCenter();
         }
 
@@ -47,6 +53,18 @@ namespace Bender.Views
         private void root_Activated(object sender, EventArgs e)
         {
             this.LabelFormatterView.FocusTxtCode();
+        }
+        private void TabMain_Selected(object sender, RoutedEventArgs e)
+        {
+            this.ApplyLabelFormat();
+        }
+        private void TabFormats_Selected(object sender, RoutedEventArgs e)
+        {
+
+        }
+        private void TabConfig_Selected(object sender, RoutedEventArgs e)
+        {
+            this.ConfigView.ApplyCurrentConfigs();
         }
     }
 }

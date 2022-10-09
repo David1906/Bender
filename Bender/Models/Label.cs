@@ -31,7 +31,7 @@ namespace Bender.Models
         {
             foreach (var item in label.Items)
             {
-                var myItem = this.Items.First(x => x.PropertyName == item.PropertyName);
+                var myItem = this.Items.First(x => x.Key == item.Key);
                 if (myItem != null)
                 {
                     myItem.Value = item.Value;

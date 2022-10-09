@@ -9,7 +9,7 @@
              xmlns:converters="clr-namespace:Bender.Views.Converters"
              xmlns:views="clr-namespace:Bender.Views"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="450" d:DesignWidth="800" d:Background="White">
 
     <UserControl.Resources>
         <converters:ModesConverter x:Key="ModesConverter" />
@@ -50,20 +50,19 @@
                 TextChanged="TxtCode_TextChanged"
                 GotFocus="TxtCode_GotFocus"/>
 
-            <TabControl
+            <TextBlock
+                Grid.Row="1"
+                Style="{StaticResource MaterialDesignHeadline5TextBlock}"
+                Background="{DynamicResource SecondaryHueMidBrush}"
+                TextAlignment="Center"
+                Foreground="White"
+                Padding="7"
+                Text="Package Information" />
+
+            <views:LabelView
                 Grid.Row="2"
-                materialDesign:ColorZoneAssist.Mode="SecondaryMid">
-                <TabItem
-                    Header="Label In">
-                    <views:LabelView
-                        x:Name="LabelInComponent"/>
-                </TabItem>
-                <TabItem
-                    Header="Label Out">
-                    <views:LabelView
-                        x:Name="LabelOutComponent"/>
-                </TabItem>
-            </TabControl>
+                IsReadOnly="True"
+                x:Name="LabelInComponent"/>
         </Grid>
 
         <Grid
@@ -104,17 +103,6 @@
                 Style="{StaticResource MaterialDesignFlatSecondaryDarkBgButton}"
                 Content="Decode"
                 IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}" />
-
-            <TextBox 
-                Grid.Row="2"
-                x:Name = "TxtFocusWindow"
-                Width="150"
-                materialDesign:HintAssist.Hint="Focus Process Name"
-                ToolTip="Name of the process to focus the window"
-                Style="{StaticResource MaterialDesignFloatingHintTextBox}"
-                Text="PCBunseal_ScanPKGID_2"
-                Foreground="Gray"
-                VerticalAlignment="Center" />
         </Grid>
 
         <TextBlock

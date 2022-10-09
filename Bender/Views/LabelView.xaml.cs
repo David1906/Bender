@@ -34,6 +34,17 @@ namespace Bender.Views
         }
         public static readonly DependencyProperty MyLabelProperty = DependencyProperty.Register("MyLabel", typeof(Models.Label), typeof(LabelView), new PropertyMetadata(null));
 
+        public static readonly DependencyProperty IsEditableProperty = DependencyProperty.Register("IsEditable", typeof(bool), typeof(LabelView), new PropertyMetadata(true));
+        public bool IsEditable
+        {
+            get { return (bool)GetValue(IsEditableProperty); }
+            set { SetValue(IsEditableProperty, value); }
+        }
+        public bool IsReadOnly
+        {
+            get { return !(bool)GetValue(IsEditableProperty); }
+            set { SetValue(IsEditableProperty, !value); }
+        }
 
         public LabelView()
         {

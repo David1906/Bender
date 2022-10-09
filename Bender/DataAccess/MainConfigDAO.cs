@@ -32,5 +32,18 @@ namespace Bender.DataAccess
                 Properties.Settings.Default.Save();
             }
         }
+
+        public string FocusProcessName
+        {
+            get
+            {
+                return Properties.Settings.Default.FOCUS_PROCESS_NAME;
+            }
+            set
+            {
+                Properties.Settings.Default.FOCUS_PROCESS_NAME = value;
+                Properties.Settings.Default.Save();
+            }
+        }
     }
 }
