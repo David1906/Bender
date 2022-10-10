@@ -66,5 +66,10 @@ namespace Bender.Views
         {
             this.MainConfigDAO.FocusProcessName = (sender as TextBox)?.Text ?? "";
         }
+
+        private void ChkAutoSelectFormatBySupplier_Changed(object sender, RoutedEventArgs e)
+        {
+            this.MainConfigDAO.SelectFormatBySupplier = (sender as CheckBox)?.IsChecked ?? false;
+        }
     }
 }

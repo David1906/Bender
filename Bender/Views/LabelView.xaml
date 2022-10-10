@@ -12,6 +12,7 @@
     <UserControl.Resources>
         <converters:ModesConverter x:Key="ModesConverter" />
         <converters:TerminatorsConverter x:Key="TerminatorsConverter" />
+        <converters:ModeToEnabledConverter x:Key="ModeToEnabledConverter" />
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
     </UserControl.Resources>
 
@@ -52,6 +53,7 @@
                                         Width="250"
                                         Text="{Binding Value, Mode=TwoWay}"
                                         Style="{StaticResource MaterialDesignFloatingHintTextBox}" 
+                                        IsEnabled="{Binding Path=Mode, Converter={StaticResource ModeToEnabledConverter}}"
                                         KeyUp="TxtValue_KeyUp"
                                         TextChanged="TxtValue_TextChanged"
                                         GotFocus="TxtValue_GotFocus"/>

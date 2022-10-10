@@ -32,7 +32,6 @@ namespace Bender.DataAccess
                 Properties.Settings.Default.Save();
             }
         }
-
         public string FocusProcessName
         {
             get
@@ -42,6 +41,18 @@ namespace Bender.DataAccess
             set
             {
                 Properties.Settings.Default.FOCUS_PROCESS_NAME = value;
+                Properties.Settings.Default.Save();
+            }
+        }
+        public bool SelectFormatBySupplier
+        {
+            get
+            {
+                return Properties.Settings.Default.SELECT_FORMAT_BY_SUPPLIER;
+            }
+            set
+            {
+                Properties.Settings.Default.SELECT_FORMAT_BY_SUPPLIER = value;
                 Properties.Settings.Default.Save();
             }
         }

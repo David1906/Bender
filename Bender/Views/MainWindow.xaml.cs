@@ -13,6 +13,8 @@ namespace Bender.Views
     /// </summary>
     public partial class MainWindow : Window
     {
+        private LabelFormatterDAO LabelFormatterDAO { get; set; } = new LabelFormatterDAO();
+        private MainConfigDAO MainConfigDAO { get; set; } = new MainConfigDAO();
         public static readonly DependencyProperty IsMenuVisibleProperty = DependencyProperty.Register("IsMenuVisible", typeof(bool), typeof(MainWindow), new PropertyMetadata(false));
         public bool IsMenuVisible
         {
@@ -28,17 +30,15 @@ namespace Bender.Views
 
         private void ApplyLabelFormat()
         {
-            var mainConfig = new MainConfigDAO();
-            var labelDAO = new LabelDAO();
-            var labelIn = labelDAO.Find(mainConfig.LabelInName);
-            var labelOut = labelDAO.Find(mainConfig.LabelOutName);
-            if (labelIn == null || labelOut == null)
+            var labelFormatter = this.LabelFormatterDAO.FindByMainConfig();
+            if (labelFormatter == null)
             {
                 this.ShowError(Message.InvalidFormat.ToDescriptionString());
                 return;
             }
-            this.LabelFormatterView.LabelFormatter = new LabelFormatter(labelIn, labelOut);
-            this.LabelFormatterView.FocusTxtCode();
+            this.LabelFormatterView.LabelFormatter = labelFormatter;
+            this.LabelFormatterView.FocusMainTextField();
+            this.LabelFormatterView.IsSelectFormatBySupplier = this.MainConfigDAO.SelectFormatBySupplier;
         }
         private void ShowError(string msg)
         {
@@ -52,7 +52,7 @@ namespace Bender.Views
         }
         private void root_Activated(object sender, EventArgs e)
         {
-            this.LabelFormatterView.FocusTxtCode();
+            this.LabelFormatterView.FocusMainTextField();
         }
         private void TabMain_Selected(object sender, RoutedEventArgs e)
         {

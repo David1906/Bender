@@ -20,17 +20,20 @@ namespace Bender.DataAccess
         [Key]
         public int LabelId { get; set; }
         public string Name { get; set; } = "";
+        public string Supplier { get; set; } = "";
+
         public virtual ICollection<LabelItemDAO> Items { get; set; } = new List<LabelItemDAO>();
 
         public LabelDAO(BenderContext? context = null) : base(context)
         {
         }
 
-        public void Add(string name, List<LabelItem> labelItems)
+        public void Add(string name, string supplier, List<LabelItem> labelItems)
         {
             var labelDAO = new LabelDAO()
             {
                 Name = name,
+                Supplier = supplier,
                 Items = MapperHelper
                     .Create<LabelItem, LabelItemDAO>()
                     .Map<List<LabelItemDAO>>(labelItems)
@@ -56,8 +59,24 @@ namespace Bender.DataAccess
         }
         public Label? Find(string name)
         {
-            var labelDAO = this.Context.Labels
-                .Where(x => x.Name == name)
+            var query = this.Context.Labels
+                .Where(x => x.Name == name);
+
+            return this.FindByQuery(query);
+        }
+        internal Label? FindBySupplier(string supplier)
+        {
+            if (string.IsNullOrWhiteSpace(supplier))
+            {
+                return null;
+            }
+            var query = this.Context.Labels
+                .Where(x => x.Supplier.ToLower() == supplier.ToLower());
+            return this.FindByQuery(query);
+        }
+        private Label? FindByQuery(IQueryable<LabelDAO> query)
+        {
+            var labelDAO = query
                 .Include(x => x.Items.OrderBy(x => x.Index))
                 .FirstOrDefault();
             if (labelDAO == null)
@@ -76,7 +95,6 @@ namespace Bender.DataAccess
             });
             return new MapperHelper(configuration).Map<Label>(labelDAO);
         }
-
         internal List<string> FindAllNames()
         {
             return this.Context.Labels.Select(x => x.Name).ToList();

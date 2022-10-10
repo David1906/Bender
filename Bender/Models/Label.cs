@@ -17,7 +17,8 @@ namespace Bender.Models
     public class Label
     {
         public string Code { get; set; } = "";
-        public string Name { get; set; }
+        public string Name { get; set; } = "";
+        public string Supplier { get; set; } = "";
 
         public BindingList<LabelItem> Items = new BindingList<LabelItem>();
 
@@ -31,7 +32,7 @@ namespace Bender.Models
         {
             foreach (var item in label.Items)
             {
-                var myItem = this.Items.First(x => x.Key == item.Key);
+                var myItem = this.Items.FirstOrDefault(x => x.Key == item.Key);
                 if (myItem != null)
                 {
                     myItem.Value = item.Value;

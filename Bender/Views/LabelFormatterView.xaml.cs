@@ -21,6 +21,7 @@ namespace Bender.Views
     /// </summary>
     public partial class LabelFormatterView : UserControl
     {
+        private LabelFormatterDAO LabelFormatterDAO { get; set; } = new LabelFormatterDAO();
         private MainConfigDAO MainConfigDAO { get; set; } = new MainConfigDAO();
         private LabelFormatter? _labelFormatter;
         public LabelFormatter? LabelFormatter
@@ -37,6 +38,13 @@ namespace Bender.Views
                     LabelInComponent.MyLabel = _labelFormatter.LabelIn;
                 }
             }
+        }
+
+        public static readonly DependencyProperty IsSelectFormatBySupplierProperty = DependencyProperty.Register("IsSelectFormatBySupplier", typeof(bool), typeof(LabelFormatterView), new PropertyMetadata(false));
+        public bool IsSelectFormatBySupplier
+        {
+            get { return (bool)GetValue(IsSelectFormatBySupplierProperty); }
+            set { SetValue(IsSelectFormatBySupplierProperty, value); }
         }
 
         public LabelFormatterView()
@@ -81,10 +89,6 @@ namespace Bender.Views
         {
             this.Decode();
         }
-        private void TxtCode_GotFocus(object sender, RoutedEventArgs e)
-        {
-            TxtMsg.Text = Message.ScannPackageCode.ToDescriptionString();
-        }
         private void Decode()
         {
             this.LabelFormatter?.Decode(TxtCode.Text);
@@ -99,7 +103,7 @@ namespace Bender.Views
             {
                 bitmapImage = this.LabelFormatter.GenerateQrImage();
                 ProcessHelper.SetFocusToExternalApp(this.MainConfigDAO.FocusProcessName);
-                TxtCode.Focus();
+                this.FocusMainTextField();
             }
             else
             {
@@ -108,10 +112,56 @@ namespace Bender.Views
             ImgQr.Source = bitmapImage;
             LabelInComponent.SelectItem(labelItem);
         }
-        public void FocusTxtCode()
+        public void FocusMainTextField()
         {
-            TxtCode.Focus();
-            TxtCode.SelectAll();
+            if (this.MainConfigDAO.SelectFormatBySupplier)
+            {
+                TxtSupplier.Focus();
+                TxtSupplier.SelectAll();
+            }
+            else
+            {
+                TxtCode.Focus();
+                TxtCode.SelectAll();
+            }
+        }
+        private void TxtCode_GotFocus(object sender, RoutedEventArgs e)
+        {
+            TxtMsg.Text = Message.ScannPackageCode.ToDescriptionString();
+        }
+        private void TxtSupplier_GotFocus(object sender, RoutedEventArgs e)
+        {
+            TxtMsg.Text = Message.ScannSupplier.ToDescriptionString();
+        }
+        private void TxtSupplier_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (TxtSupplier.Text.Contains("\n"))
+            {
+                this.ApplyFormatBySupplier();
+            }
+        }
+        private void TxtSupplier_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Return)
+            {
+                this.ApplyFormatBySupplier();
+            }
+        }
+        private void ApplyFormatBySupplier()
+        {
+            var labelFormatter = this.LabelFormatterDAO.FindBySupplier(TxtSupplier.Text);
+            if (labelFormatter == null)
+            {
+                MaterialDesignThemes.Wpf.DialogHost.Show($"Invalid supplier \"{TxtSupplier.Text}\", please try again");
+                TxtSupplier.Focus();
+            }
+            else
+            {
+                this.LabelFormatter = labelFormatter;
+                TxtCode.Clear();
+                TxtCode.Focus();
+            }
+            TxtSupplier.Clear();
         }
     }
 }

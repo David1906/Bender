@@ -12,6 +12,8 @@ namespace Bender.Enums
         [Description("Scann Package 2D Code")]
         ScannPackageCode,
         [Description("Invalid format, please verify configuration")]
-        InvalidFormat
+        InvalidFormat,
+        [Description("Scann Supplier")]
+        ScannSupplier
     }
 }
