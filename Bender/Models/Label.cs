@@ -11,20 +11,46 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using System;
+using System.Text.Json;
+using System.Diagnostics;
 
 namespace Bender.Models
 {
     public class Label
     {
+        public int LabelId { get; set; }
         public string Code { get; set; } = "";
-        public string Name { get; set; } = "";
+        public string Name { get; set; } = "LABEL_NAME";
         public string Supplier { get; set; } = "";
+        private BindingList<LabelItem> _items = new BindingList<LabelItem>();
+        public BindingList<LabelItem> Items
+        {
+            get { return _items; }
+            set
+            {
+                _items = value;
+            }
+        }
 
-        public BindingList<LabelItem> Items = new BindingList<LabelItem>();
+        public bool IsPersisted
+        {
+            get
+            {
+                return this.LabelId > 0;
+            }
+        }
 
+        public Label()
+        {
+        }
         public Label(BindingList<LabelItem> items)
         {
             this.Items = items;
+            this.SetFormatIndexes();
+        }
+        public Label(List<LabelItem> labelItems)
+        {
+            this.Items = new BindingList<LabelItem>(labelItems);
             this.SetFormatIndexes();
         }
 
@@ -120,6 +146,11 @@ namespace Bender.Models
                 }
             }
         }
+        public Label Clone()
+        {
+            var label = JsonSerializer.Deserialize<Label>(JsonSerializer.Serialize(this)) ?? new Label();
+            return label;
+        }
         public BitmapImage GenerateQRCode()
         {
             QRCodeGenerator qrGenerator = new QRCodeGenerator();
@@ -147,6 +178,17 @@ namespace Bender.Models
         public bool EqualsCode(Label label)
         {
             return this.Code == label.Code;
+        }
+        public void AddEmptyItem()
+        {
+            this.Items.Add(new LabelItem()
+            {
+                Index = this.Items.Count + 1,
+            });
+        }
+        public void DeleteItem(LabelItem item)
+        {
+            this.Items.Remove(item);
         }
     }
 }

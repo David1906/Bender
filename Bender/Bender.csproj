@@ -6,6 +6,11 @@
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
     <ApplicationIcon>Resources\Images\icon_bender.ico</ApplicationIcon>
+    <AssemblyVersion></AssemblyVersion>
+    <Version>1.0.1</Version>
+    <Authors>David Ascencio</Authors>
+    <Company>Foxconn</Company>
+    <Description>Package code formatter</Description>
   </PropertyGroup>
 
   <ItemGroup>

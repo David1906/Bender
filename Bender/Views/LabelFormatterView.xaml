@@ -100,13 +100,27 @@
                     Height="200"
                     Name="ImgQr"/>
 
-                <Button
-                    Name="BtnReload"
-                    Style="{StaticResource MaterialDesignFloatingActionMiniSecondaryButton}"
-                    Click="BtnReload_Click">
-                    <materialDesign:PackIcon
-                        Kind="Reload"/>
-                </Button>
+                <StackPanel
+                    HorizontalAlignment="Center"
+                    Orientation="Horizontal">
+                    <Button
+                        Name="BtnReload"
+                        Style="{StaticResource MaterialDesignFloatingActionMiniSecondaryButton}"
+                        Click="BtnReload_Click">
+                        <materialDesign:PackIcon
+                            Kind="Reload"/>
+                    </Button>
+
+                    <Button
+                        Name="BtnSaveQr"
+                        Margin="20 0 0 0"
+                        Style="{StaticResource MaterialDesignFloatingActionMiniButton}"
+                        Click="BtnSaveQr_Click">
+                        <materialDesign:PackIcon
+                            Kind="ContentSave"/>
+                    </Button>
+                </StackPanel>
+                
             </StackPanel>
 
             <Button

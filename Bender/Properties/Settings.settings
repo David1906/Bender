@@ -6,7 +6,7 @@
       <Value Profile="(Default)">AVANTE</Value>
     </Setting>
     <Setting Name="LABEL_OUT_NAME" Type="System.String" Scope="User">
-      <Value Profile="(Default)">AUTO_LABEL_OUT</Value>
+      <Value Profile="(Default)">PCBunseal_ScanPKGID_2</Value>
     </Setting>
     <Setting Name="FOCUS_PROCESS_NAME" Type="System.String" Scope="User">
       <Value Profile="(Default)">PCBunseal_ScanPKGID_2</Value>

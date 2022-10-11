@@ -11,6 +11,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System;
+using System.Collections;
+using System.Diagnostics.Contracts;
 
 namespace Bender.DataAccess
 {
@@ -21,7 +23,6 @@ namespace Bender.DataAccess
         public int LabelId { get; set; }
         public string Name { get; set; } = "";
         public string Supplier { get; set; } = "";
-
         public virtual ICollection<LabelItemDAO> Items { get; set; } = new List<LabelItemDAO>();
 
         public LabelDAO(BenderContext? context = null) : base(context)
@@ -41,6 +42,7 @@ namespace Bender.DataAccess
             this.Context.Labels.Add(labelDAO);
             this.Context.SaveChanges();
         }
+
         public bool IsTableEmpty()
         {
             return this.Context.Labels.Count() <= 0;
@@ -57,14 +59,24 @@ namespace Bender.DataAccess
         {
             new LabelSeeder(this.Context).Seed();
         }
-        public Label? Find(string name)
+        public List<Label> FindAll(bool tracking = false)
+        {
+            var labelsDAO = this.Context.Labels
+                .Include(x => x.Items.OrderBy(x => x.Index))
+                .ToList(); ;
+            if (labelsDAO == null)
+            {
+                return new List<Label>();
+            }
+            return this.MapTo<List<Label>>(labelsDAO);
+        }
+        public Label? Find(string name, bool tracking = false)
         {
             var query = this.Context.Labels
                 .Where(x => x.Name == name);
-
-            return this.FindByQuery(query);
+            return this.FindByQuery(query, tracking);
         }
-        internal Label? FindBySupplier(string supplier)
+        internal Label? FindBySupplier(string supplier, bool tracking = false)
         {
             if (string.IsNullOrWhiteSpace(supplier))
             {
@@ -72,10 +84,14 @@ namespace Bender.DataAccess
             }
             var query = this.Context.Labels
                 .Where(x => x.Supplier.ToLower() == supplier.ToLower());
-            return this.FindByQuery(query);
+            return this.FindByQuery(query, tracking);
         }
-        private Label? FindByQuery(IQueryable<LabelDAO> query)
+        private Label? FindByQuery(IQueryable<LabelDAO> query, bool tracking)
         {
+            if (tracking == false)
+            {
+                query = query.AsNoTracking();
+            }
             var labelDAO = query
                 .Include(x => x.Items.OrderBy(x => x.Index))
                 .FirstOrDefault();
@@ -83,17 +99,72 @@ namespace Bender.DataAccess
             {
                 return null;
             }
-            return this.MapToLabel(labelDAO);
+            return this.MapTo<Label>(labelDAO);
         }
-        private Label MapToLabel(LabelDAO labelDAO)
+        private T MapTo<T>(LabelDAO labelDAO)
         {
+            return this.MapTo<LabelDAO, T>(labelDAO);
+        }
+        private T MapTo<T>(List<LabelDAO> labelsDAO)
+        {
+            return this.MapTo<List<LabelDAO>, T>(labelsDAO);
+        }
+        private Tdestination MapTo<TSource, Tdestination>(TSource labelDAO)
+        {
+            Contract.Assert(labelDAO != null);
             var configuration = new MapperConfiguration(c =>
             {
                 c.CreateMap<LabelDAO, Label>()
                      .ForMember(s => s.Items, c => c.MapFrom(m => m.Items));
                 c.CreateMap<LabelItemDAO, LabelItem>();
             });
-            return new MapperHelper(configuration).Map<Label>(labelDAO);
+            return new MapperHelper(configuration).Map<Tdestination>(labelDAO);
+        }
+        private Tdestination MapFrom<TSource, Tdestination>(TSource labelDAO)
+        {
+            Contract.Assert(labelDAO != null);
+            var configuration = new MapperConfiguration(c =>
+            {
+                c.CreateMap<Label, LabelDAO>()
+                     .ForMember(s => s.Items, c => c.MapFrom(m => m.Items));
+                c.CreateMap<LabelItem, LabelItemDAO>();
+            });
+            return new MapperHelper(configuration).Map<Tdestination>(labelDAO);
+        }
+        public void Save(Label label)
+        {
+            LabelDAO labelDAO = this.MapFrom<Label, LabelDAO>(label);
+            if (labelDAO != null)
+            {
+                if (label.IsPersisted)
+                {
+                    this.Remove(label);
+                }
+                this.Context.Labels.Add(labelDAO);
+                this.Context.SaveChanges();
+            }
+        }
+        public void Remove(Label label)
+        {
+            var labelDAO = this.Context.Labels
+                .Where(x => x.LabelId == label.LabelId)
+                .FirstOrDefault();
+            if (labelDAO != null)
+            {
+                this.Context.Labels.Remove(labelDAO);
+                this.Context.SaveChanges();
+            }
+        }
+        private void RemoveItems(Label label)
+        {
+            var labelItemsDAO = this.Context.LabelItems
+                .Where(x => x.Label.LabelId == label.LabelId)
+                .ToList();
+            if (labelItemsDAO != null)
+            {
+                this.Context.LabelItems.RemoveRange(labelItemsDAO);
+                this.Context.SaveChanges();
+            }
         }
         internal List<string> FindAllNames()
         {

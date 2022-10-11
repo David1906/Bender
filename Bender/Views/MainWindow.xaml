@@ -41,13 +41,13 @@
                             Foreground="OrangeRed"
                             HorizontalAlignment="Center"
                             Kind="Alert" />
-                        
+
                         <TextBlock 
                             Margin="0 10 0 30"
                             FontSize="18 "
                             HorizontalAlignment="Center"
                             Text="{Binding .}"/>
-                        
+
                         <Button
                             Style="{StaticResource MaterialDesignRaisedSecondaryDarkButton}"
                             IsDefault="True"
@@ -59,11 +59,11 @@
                             </Button.CommandParameter>
                         </Button>
                     </StackPanel>
-                </StackPanel>                
+                </StackPanel>
             </DataTemplate>
         </materialDesign:DialogHost.DialogContentTemplate>
 
-            <Grid>
+        <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="*"/>
@@ -135,14 +135,8 @@
                             Text="Formats" />
                         </StackPanel>
                     </TabItem.Header>
-                    <TextBlock
-                        Background="AntiqueWhite"
-                        VerticalAlignment="Center"
-                        Padding="30"
-                        TextAlignment="Center"
-                        FontSize="32">
-                        Under Construction
-                    </TextBlock>
+                    <views:LabelCRUDView
+                        x:Name="LabelCRUDView"/>
                 </TabItem>
                 <TabItem
                 Name="TabConfig"

@@ -1,4 +1,5 @@
-﻿using Bender.Enums;
+﻿using Bender.DataAccess;
+using Bender.Enums;
 using Bender.Extensions;
 using Bender.Helpers;
 using Bender.Models;
@@ -12,7 +13,7 @@ using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using System.Windows;
 using System;
-using Bender.DataAccess;
+using Microsoft.Win32;
 
 namespace Bender.Views
 {
@@ -162,6 +163,20 @@ namespace Bender.Views
                 TxtCode.Focus();
             }
             TxtSupplier.Clear();
+        }
+        private void BtnSaveQr_Click(object sender, RoutedEventArgs e)
+        {
+            if (this.LabelFormatter == null)
+            {
+                return;
+            }
+            SaveFileDialog sf = new SaveFileDialog();
+            sf.FileName = $"QR_{this.LabelFormatter?.LabelIn?.Supplier ?? ""}_{DateTime.Now:dd_MM_yyyy_Hmms}";
+            sf.Filter = "*.jpg|*.jpg";
+            if (sf.ShowDialog() == true)
+            {
+                this.LabelFormatter.GenerateQrImage().Save(sf.FileName);
+            }
         }
     }
 }

@@ -12,8 +12,10 @@
     <UserControl.Resources>
         <converters:ModesConverter x:Key="ModesConverter" />
         <converters:TerminatorsConverter x:Key="TerminatorsConverter" />
-        <converters:ModeToEnabledConverter x:Key="ModeToEnabledConverter" />
+        <converters:LabelItemEnabledConverter x:Key="LabelItemEnabledConverter" />
+        <converters:ModeToBoolean x:Key="ModeToBoolean" />
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
+        <converters:InverseBooleanToVisibilityConverter x:Key="InverseBoolToVis" />
     </UserControl.Resources>
 
     <Grid>
@@ -26,23 +28,44 @@
             Margin="0 15 0 0"
             Name="LvLabelItems"
             VirtualizingStackPanel.IsVirtualizing="False"
+            BorderBrush="Transparent"
             ItemsSource="{Binding ElementName=root, Path=MyLabel.Items}">
             <ListView.View>
                 <GridView
                     VirtualizingStackPanel.IsVirtualizing="False"
                     x:Name ="GridView1">
                     <GridView.Columns>
-                        <GridViewColumn
-                            Width="150">
+                        <GridViewColumn                            
+                            Width="auto">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
-                                    <materialDesign:Chip
-                                    Content="{Binding Title}"
-                                    Icon="{Binding Index}"
-                                    Click="Chip_Click"/>
+                                    <Grid>
+                                        <materialDesign:Chip
+                                            Content="{Binding Title}"
+                                            Icon="{Binding Index}"
+                                            Visibility="{Binding ElementName=root, Path=IsEditable, Converter={StaticResource InverseBoolToVis}}"
+                                            Click="Chip_Click"/>
+
+                                        <StackPanel
+                                            Orientation="Horizontal"
+                                            Visibility="{Binding ElementName=root, Path=IsEditable, Converter={StaticResource BoolToVis}}">
+                                            <materialDesign:Chip
+                                                Content=""
+                                                Icon="{Binding Index}"
+                                                Click="Chip_Click"/>
+
+                                            <TextBox
+                                                Name="TxtTitle"
+                                                Width="120"
+                                                Text="{Binding Title, Mode=TwoWay}"
+                                                Style="{StaticResource MaterialDesignFloatingHintTextBox}"                                                 
+                                            materialDesign:HintAssist.Hint="Title"/>
+                                        </StackPanel>
+                                    </Grid>
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
+
 
                         <GridViewColumn
                             Width="Auto">
@@ -53,10 +76,17 @@
                                         Width="250"
                                         Text="{Binding Value, Mode=TwoWay}"
                                         Style="{StaticResource MaterialDesignFloatingHintTextBox}" 
-                                        IsEnabled="{Binding Path=Mode, Converter={StaticResource ModeToEnabledConverter}}"
+                                        materialDesign:HintAssist.Hint="Value"
                                         KeyUp="TxtValue_KeyUp"
                                         TextChanged="TxtValue_TextChanged"
-                                        GotFocus="TxtValue_GotFocus"/>
+                                        GotFocus="TxtValue_GotFocus">
+                                        <TextBox.IsEnabled >
+                                            <MultiBinding Converter="{StaticResource LabelItemEnabledConverter}">
+                                                <Binding Path="Mode"/>
+                                                <Binding ElementName="root" Path="IsEditable"/>
+                                            </MultiBinding>
+                                        </TextBox.IsEnabled>
+                                    </TextBox>
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
@@ -102,14 +132,30 @@
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
+
+                        <GridViewColumn
+                            Width="Auto">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBox
+                                        Name="TxtKey"
+                                        Width="100"
+                                        Text="{Binding Key, Mode=TwoWay}"
+                                        materialDesign:HintAssist.Hint="Key"
+                                        Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                                        Visibility="{Binding ElementName=root, Path=IsEditable, Converter={StaticResource BoolToVis}}">
+                                    </TextBox>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
                     </GridView.Columns>
                 </GridView>
             </ListView.View>
             <ListView.ItemContainerStyle>
                 <Style TargetType="{x:Type ListViewItem}">
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding IsDisabled}" Value="True">
-                            <Setter Property="Opacity" Value="0.3"/>
+                        <DataTrigger Binding="{Binding Mode, Converter={StaticResource ModeToBoolean}}" Value="False">
+                            <Setter Property="Opacity" Value="0.5"/>
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
@@ -133,6 +179,7 @@
                 Click="BtnUp_Click"
                 Width="25"
                 Height="25"
+                ToolTip="Move selected row up"
                 Style="{StaticResource MaterialDesignFloatingActionMiniSecondaryButton}">
                 <materialDesign:PackIcon
                     Kind="ArrowUpBold"
@@ -146,9 +193,44 @@
                 Width="25"
                 Height="25"
                 Style="{StaticResource MaterialDesignFloatingActionMiniSecondaryButton}"
+                ToolTip="Move selected row down"
                 Margin="0 15 0 0">
                 <materialDesign:PackIcon
                     Kind="ArrowDownBold"
+                    Height="15"
+                    Width="15"/>
+            </Button>
+
+            <Button
+                Name="BtnAddRow"
+                Width="25"
+                Height="25"
+                Style="{StaticResource MaterialDesignFloatingActionMiniSecondaryButton}"
+                ToolTip="Add new row"
+                Background="GreenYellow"
+                BorderBrush="Transparent"
+                Margin="0 15 0 0"
+                Click="BtnAddRow_Click">
+                <materialDesign:PackIcon
+                    Kind="PlaylistPlus"
+                    Foreground="Gray"
+                    Height="15"
+                    Width="15"/>
+            </Button>
+
+            <Button
+                Name="BtnDeleteRow"
+                Width="25"
+                Height="25"
+                Style="{StaticResource MaterialDesignFloatingActionMiniSecondaryButton}"
+                ToolTip="Delete row"
+                Background="PaleVioletRed"
+                BorderBrush="Transparent"
+                Margin="0 15 0 0"
+                Click="BtnDeleteRow_Click">
+                <materialDesign:PackIcon
+                    Kind="TrashCan"
+                    Foreground="White"
                     Height="15"
                     Width="15"/>
             </Button>

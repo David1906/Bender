@@ -1,19 +1,36 @@
 ﻿using Bender.Enums;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Serialization;
+using System.Text.Json;
 using System.Text;
 using System.Threading.Tasks;
 using System;
+using System.ComponentModel;
 
 namespace Bender.Models
 {
-    public class LabelItem
+    public class LabelItem : INotifyPropertyChanged
     {
         public int Index { get; set; }
         public string Value { get; set; } = "";
         public string Title { get; set; } = "";
         public string Key { get; set; } = "";
-        public Modes Mode { get; set; } = Modes.Disabled;
+        private Modes _mode = Modes.Decode;
+        public Modes Mode
+        {
+            get { return _mode; }
+            set
+            {
+                if (value != _mode)
+                {
+                    _mode = value;
+                    NotifyPropertyChanged("Mode");
+                }
+            }
+        }
+        public event PropertyChangedEventHandler? PropertyChanged;
+
         public Terminators Terminator { get; set; } = Terminators.Comma;
         public bool IsDisabled
         {
@@ -30,6 +47,13 @@ namespace Bender.Models
             }
         }
 
+        private void NotifyPropertyChanged(String info)
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(info));
+            }
+        }
         public string GetInstructionText()
         {
             var text = "";
@@ -40,6 +64,12 @@ namespace Bender.Models
                     break;
             }
             return text;
+        }
+        public LabelItem Clone()
+        {
+            var labelItem = JsonSerializer.Deserialize<LabelItem>(
+                JsonSerializer.Serialize(this));
+            return labelItem ?? new LabelItem();
         }
     }
 }

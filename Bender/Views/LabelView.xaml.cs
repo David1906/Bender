@@ -7,6 +7,7 @@ using System.Linq;
 using System.Collections.Generic;
 using Bender.Models;
 using Bender.Enums;
+using System.ComponentModel;
 
 namespace Bender.Views
 {
@@ -30,7 +31,10 @@ namespace Bender.Views
         public Models.Label MyLabel
         {
             get { return (Models.Label)GetValue(MyLabelProperty); }
-            set { SetValue(MyLabelProperty, value); RefreshListViewCodeItem(); }
+            set
+            {
+                SetValue(MyLabelProperty, value);
+            }
         }
         public static readonly DependencyProperty MyLabelProperty = DependencyProperty.Register("MyLabel", typeof(Models.Label), typeof(LabelView), new PropertyMetadata(null));
 
@@ -45,6 +49,18 @@ namespace Bender.Views
             get { return !(bool)GetValue(IsEditableProperty); }
             set { SetValue(IsEditableProperty, !value); }
         }
+        public new bool IsEnabled
+        {
+            get { return (bool)GetValue(IsEnabledProperty); }
+            set
+            {
+                SetValue(IsEnabledProperty, value);
+                if (!value)
+                {
+                    this.SelectItem(null);
+                }
+            }
+        }
 
         public LabelView()
         {
@@ -57,8 +73,9 @@ namespace Bender.Views
             if (selectedItem != null)
             {
                 this.MyLabel.SwapUp(selectedItem);
+                this.RefreshListViewCodeItem();
+                this.SelectItem(selectedItem);
             }
-            this.RefreshListViewCodeItem();
         }
 
         private void BtnDown_Click(object sender, RoutedEventArgs e)
@@ -67,8 +84,9 @@ namespace Bender.Views
             if (selectedItem != null)
             {
                 this.MyLabel.SwapDown(selectedItem);
+                this.RefreshListViewCodeItem();
+                this.SelectItem(selectedItem);
             }
-            this.RefreshListViewCodeItem();
         }
 
         private void RefreshListViewCodeItem()
@@ -157,6 +175,18 @@ namespace Bender.Views
             if (chip != null)
             {
                 this.SelectItem((LabelItem)chip.DataContext);
+            }
+        }
+        private void BtnAddRow_Click(object sender, RoutedEventArgs e)
+        {
+            this.MyLabel.AddEmptyItem();
+        }
+        private void BtnDeleteRow_Click(object sender, RoutedEventArgs e)
+        {
+            var selectedItem = LvLabelItems.SelectedItem as Models.LabelItem;
+            if (selectedItem != null)
+            {
+                this.MyLabel.DeleteItem(selectedItem);
             }
         }
     }

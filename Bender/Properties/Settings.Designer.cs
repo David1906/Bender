@@ -37,7 +37,7 @@ namespace Bender.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("AUTO_LABEL_OUT")]
+        [global::System.Configuration.DefaultSettingValueAttribute("PCBunseal_ScanPKGID_2")]
         public string LABEL_OUT_NAME {
             get {
                 return ((string)(this["LABEL_OUT_NAME"]));
