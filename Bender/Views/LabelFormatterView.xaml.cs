@@ -163,6 +163,7 @@ namespace Bender.Views
                 TxtCode.Focus();
             }
             TxtSupplier.Clear();
+            ImgQr.Source = null;
         }
         private void BtnSaveQr_Click(object sender, RoutedEventArgs e)
         {
