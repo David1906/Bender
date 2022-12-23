@@ -1,4 +1,5 @@
 ﻿using Bender.Enums;
+using Bender.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -62,6 +63,21 @@ namespace Bender.DataAccess
                 new Models.LabelItem() {Index = 2, Key = "SupplierPn", Terminator = Terminators.Comma, Title = "Supplier PN:", Mode = Modes.Decode},
             };
             new LabelDAO(this.Context).Add("TEST", "TEST", test);
+        }
+
+        public static Label GetDefaultLabel()
+        {
+            var items = new List<Models.LabelItem>
+            {
+                new Models.LabelItem() {Index = 0, Key = "HhPn", Terminator = Terminators.Comma, Title = "HH PN:", Mode = Modes.Decode},
+                new Models.LabelItem() {Index = 1, Key = "Qty", Terminator = Terminators.Comma, Title = "Qty:", Mode = Modes.Decode},
+                new Models.LabelItem() {Index = 2, Key = "SupplierPn", Terminator = Terminators.Comma, Title = "Supplier PN:", Mode = Modes.Decode},
+                new Models.LabelItem() {Index = 3, Key = "DateCode", Terminator = Terminators.Comma, Title = "Date Code:", Mode = Modes.Decode},
+                new Models.LabelItem() {Index = 4, Key = "LotNo", Terminator = Terminators.Comma, Title = "Lot No:", Mode = Modes.Decode},
+                new Models.LabelItem() {Index = 5, Key = "PkgId", Terminator = Terminators.Comma, Title = "Pkg Id:", Mode = Modes.Decode},
+                new Models.LabelItem() {Index = 6, Key = "Supplier", Terminator = Terminators.None, Title = "Supplier:", Mode = Modes.Fixed, Value= "REPLACE_WITH_SUPPLIER"}
+            };
+            return new Label(items);
         }
     }
 }

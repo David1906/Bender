@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using Microsoft.EntityFrameworkCore;
+using Bender.Utils;
 
 namespace Bender
 {
@@ -20,6 +21,15 @@ namespace Bender
         {
         }
 
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            if (SingleInstance.AmIAlreadyRunning())
+            {
+                System.Windows.Application.Current.Shutdown();
+                Environment.Exit(0);
+            }
+            base.OnStartup(e);
+        }
         private void Application_Startup(object sender, StartupEventArgs e)
         {
             new BenderContext().Initialize();

@@ -21,7 +21,7 @@ namespace Bender.Models
         public int LabelId { get; set; }
         public string Code { get; set; } = "";
         public string Name { get; set; } = "LABEL_NAME";
-        public string Supplier { get; set; } = "";
+        public string Supplier { get; set; } = "LABEL_SUPPLIER";
         private BindingList<LabelItem> _items = new BindingList<LabelItem>();
         public BindingList<LabelItem> Items
         {

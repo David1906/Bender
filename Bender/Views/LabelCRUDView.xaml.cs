@@ -94,7 +94,7 @@ namespace Bender.Views
         }
         private void BtnAdd_Click(object sender, RoutedEventArgs e)
         {
-            this.SelectedLabel = new Models.Label();
+            this.SelectedLabel = LabelSeeder.GetDefaultLabel();
             this.State = StatesCRUD.Create;
             this.CmbLabels.SelectedIndex = -1;
             TxtName.Focus();
